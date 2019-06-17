@@ -292,8 +292,6 @@ class RolPagosController extends ControladorBase{
 		$_total_egresos =0;
 		
 		
-		
-		
 		if (isset ($_POST["mes_afectacion"]))
 		{
 		
