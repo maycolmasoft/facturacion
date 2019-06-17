@@ -1,0 +1,82 @@
+CREATE TABLE public.temp_lectura_biometrico
+(
+    id_temp_lectura_biometrico integer NOT NULL DEFAULT nextval('temp_lectura_biometrico_id_temp_lectura_biometrico_seq'::regclass),
+    cedula_temp_lectura_biometrico character varying(20) COLLATE pg_catalog."default",
+    fecha_temp_lectura_biometrico date,
+    hora_temp_lectura_biometrico time with time zone,
+    linea_temp_lectura_biometrico integer,
+    CONSTRAINT temp_lectura_biometrico_pkey PRIMARY KEY (id_temp_lectura_biometrico)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.temp_lectura_biometrico
+    OWNER to postgres;
+
+
+    
+CREATE TABLE public.lectura_biometrico
+(
+    id_lectura_biometrico integer NOT NULL DEFAULT nextval('lectura_biometrico_id_lectura_biometrico_seq'::regclass),
+    id_clientes integer,
+    fecha_lectura_biometrico date,
+    hora_lectura_biometrico time without time zone,
+    mes_lectura_biometrico character varying(5) COLLATE pg_catalog."default",
+    anio_lectura_biometrico character varying(5) COLLATE pg_catalog."default",
+    CONSTRAINT lectura_biometrico_pkey PRIMARY KEY (id_lectura_biometrico)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.lectura_biometrico
+    OWNER to postgres;
+
+    CREATE OR REPLACE FUNCTION public.ins_temp_lectura_biometrico(
+	_in_cedula_archivo character varying,
+	_in_fecha_archivo date,
+	_in_hora_archivo time without time zone,
+	_in_linea integer)
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+DECLARE
+	rc_temp_lectura RECORD; 
+
+  BEGIN	
+	
+	SELECT 1 existe INTO rc_temp_lectura FROM temp_lectura_biometrico  
+	WHERE cedula_temp_lectura_biometrico = _in_cedula_archivo
+	AND fecha_temp_lectura_biometrico = _in_fecha_archivo
+	AND hora_temp_lectura_biometrico = _in_hora_archivo;
+	
+	IF  NOT (rc_temp_lectura.existe = 1) OR (rc_temp_lectura.existe IS null) THEN 
+		INSERT INTO temp_lectura_biometrico(
+			  cedula_temp_lectura_biometrico,
+			  fecha_temp_lectura_biometrico,
+			  hora_temp_lectura_biometrico,
+			  linea_temp_lectura_biometrico
+				)
+		VALUES (
+			_in_cedula_archivo ,
+			_in_fecha_archivo ,
+			_in_hora_archivo ,
+			_in_linea
+			);
+		RETURN 1;
+	ELSE
+		RETURN 0;
+    END IF;   
+   END;
+
+$BODY$;
+
+ALTER FUNCTION public.ins_temp_lectura_biometrico(character varying, date, time without time zone, integer)
+    OWNER TO postgres;
