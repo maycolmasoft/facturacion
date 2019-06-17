@@ -72,7 +72,6 @@ class PermisosRolesController extends ControladorBase{
 						}
 						
 						
-						
 					}
 			
 					
@@ -101,7 +100,6 @@ class PermisosRolesController extends ControladorBase{
 	
 	}
 	
-	
 	public function InsertaPermisosRoles(){
 
 		session_start();
@@ -116,7 +114,6 @@ class PermisosRolesController extends ControladorBase{
 		
 		if (!empty($resultPer))
 		{
-		
 		
 		//_nombre_categorias character varying, _path_categorias character varying
 		if (isset ($_POST["nombre_permisos_rol"]) && isset ($_POST["id_controladores"]) && isset ($_POST["id_rol"])  )
@@ -166,8 +163,6 @@ class PermisosRolesController extends ControladorBase{
 		
 		}
 		
-		
-		
 	}
 	
 	public function borrarId()
@@ -205,22 +200,6 @@ class PermisosRolesController extends ControladorBase{
 		}
 		
 	}
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
 
 	
 }
