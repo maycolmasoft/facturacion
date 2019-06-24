@@ -23,12 +23,6 @@ $controladores=$_SESSION['controladores'];
 ?>
 
 
-
-
-
-
-
-
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MENU</li>
         <li class="treeview"  style="<?php echo getcontrolador("MenuAdministracion",$controladores) ?>"  >
@@ -61,6 +55,8 @@ $controladores=$_SESSION['controladores'];
             <li style="<?php echo getcontrolador("Formulas",$controladores) ?>"><a href="index.php?controller=Formulas&action=index"><i class="fa fa-circle-o"></i>Formulas</a></li>
             <li style="<?php echo getcontrolador("Empleados",$controladores) ?>"><a href="index.php?controller=Empleados&action=index"><i class="fa fa-circle-o"></i> Empleados</a></li>
             <li style="<?php echo getcontrolador("AsignacionEmpleados",$controladores) ?>"><a href="index.php?controller=AsignacionEmpleados&action=index"><i class="fa fa-circle-o"></i> Asignar Rubros Empleados</a></li>
+            <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=index"><i class="fa fa-circle-o"></i> Productos</a></li>
+            <li style="<?php echo getcontrolador("Clientes",$controladores) ?>"><a href="index.php?controller=Clientes&action=index"><i class="fa fa-circle-o"></i> Clientes</a></li>
            
           </ul>
         </li>
