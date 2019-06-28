@@ -4,7 +4,7 @@
          
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Milenio</title>
+    <title>Facturación</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
  
@@ -76,7 +76,7 @@
 						<form action="<?php echo $helper->url("Productos","InsertaProductos"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
                               <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
             
-             						 <div class="row">
+             					<div class="row">
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                             		    <div class="form-group">
                             		   						 
