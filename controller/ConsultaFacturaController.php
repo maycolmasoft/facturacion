@@ -330,11 +330,11 @@ class ConsultaFacturaController extends ControladorBase{
         $datos_reporte['CEDULACLIENTE']=$rsdatos[0]->identificacion_clientes;
         $datos_reporte['FECHAEMISION']=$rsdatos[0]->fecha_factura_cabeza;
         $datos_reporte['SUBTOTAL']=$rsdatos[0]->subtotal_factura_cabeza;
-        $datos_reporte['PORCENTAJEDESCUENTOS']=$rsdatos[0]->fecha_factura_cabeza;
-        $datos_reporte['DESCUENTOS']=$rsdatos[0]->fecha_factura_cabeza;
-        $datos_reporte['PORCENTAJEIVA']=$rsdatos[0]->fecha_factura_cabeza;
-        $datos_reporte['IVA']=$rsdatos[0]->fecha_factura_cabeza;
-        $datos_reporte['TOTALFACT']=$rsdatos[0]->fecha_factura_cabeza;
+        $datos_reporte['PORCENTAJEDESCUENTOS']=$rsdatos[0]->porcentaje_descuento;
+        $datos_reporte['DESCUENTOS']=$rsdatos[0]->valor_descuento_factura_cabeza;
+        $datos_reporte['PORCENTAJEIVA']=$rsdatos[0]->porcentaje_iva;
+        $datos_reporte['IVA']=$rsdatos[0]->valor_iva_factura_cabeza;
+        $datos_reporte['TOTALFACT']=$rsdatos[0]->total_factura_cabeza;
             
         
         
