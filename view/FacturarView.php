@@ -150,7 +150,7 @@
     		     <div class="col-lg-2 col-xs-12 col-md-2">
         		    <div class="form-group">
                           <label for="id_tipo_pago" class="control-label">Numero Factura:</label>
-                          <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="">
+                          <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="" readonly>
                           <div id="mensaje_id_tipo_pago" class="errores"></div>
                     </div>
     		    </div>
@@ -1123,6 +1123,10 @@
 				parametros += "&porcentaje_iva="+_iva+"&porcentaje_descuento="+_descuento;
 
 				console.log(parametros)
+				
+				//creacion de form y enviar datos
+				 var formReporte = $("<form>")
+				//termina crecion de form
 
 				$.ajax({
 					url:"index.php?controller=Facturar&action=InsertaFactura",
@@ -1134,6 +1138,11 @@
 					if(x.valor == 1){
 						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
 							})
+						var url="index.php?controller=ConsultaFactura&action=generar_reporte_factura";
+						var windowoption="";
+						var target = "blanck";
+						var params = { 'id_factura_cabeza' : x.id_factura};
+						OpenWindowWithPost(url, windowoption, target, params);
 						window.location.reload();
 						}
 					console.log(x)
@@ -1215,6 +1224,34 @@
 					console.log(err)
 					})
 			    }
+
+		    function OpenWindowWithPost(url, windowoption, target, params)
+		    {
+		             var form = document.createElement("form");
+		             form.setAttribute("method", "post");
+		             form.setAttribute("action", url);
+		             form.setAttribute("target", name);
+		  
+		             for (var i in params) {
+		                 if (params.hasOwnProperty(i)) {
+		                     var input = document.createElement('input');
+		                     input.type = 'hidden';
+		                     input.name = i;
+		                     input.value = params[i];
+		                     form.appendChild(input);
+		                 }
+		             }
+		             
+		             document.body.appendChild(form);
+		             
+		             //note I am using a post.htm page since I did not want to make double request to the page 
+		            //it might have some Page_Load call which might screw things up.
+		             //window.open("post.htm", name, windowoption);
+		             
+		             form.submit();
+		             
+		             document.body.removeChild(form);
+		     }
 
 	</script>
      

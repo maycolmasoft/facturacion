@@ -1121,10 +1121,11 @@ class FacturarController extends ControladorBase{
 	        if(is_null($resultado))
 	            throw new Exception( "error al insertar Factura"); 
 	        
-            if ( $resultado[0] == 1 ){
+            if ( $resultado[0] > 0 ){
                 
                 $respuesta['mensaje'] = "Factura Ingresada correctamente";
                 $respuesta['valor'] = 1;
+                $respuesta['id_factura'] = $resultado[0];
                 
             }
 	        
