@@ -1124,9 +1124,7 @@
 
 				console.log(parametros)
 				
-				//creacion de form y enviar datos
-				 var formReporte = $("<form>")
-				//termina crecion de form
+				
 
 				$.ajax({
 					url:"index.php?controller=Facturar&action=InsertaFactura",
@@ -1136,14 +1134,19 @@
 				}).done(function(x){
 
 					if(x.valor == 1){
-						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
-							})
+						
 						var url="index.php?controller=ConsultaFactura&action=generar_reporte_factura";
 						var windowoption="";
-						var target = "blanck";
+						var target = "blank";
 						var params = { 'id_factura_cabeza' : x.id_factura};
-						OpenWindowWithPost(url, windowoption, target, params);
-						window.location.reload();
+						
+						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
+							}).then(function(){
+								OpenWindowWithPost(url, windowoption, target, params);
+								window.location.reload();
+								});
+						
+						
 						}
 					console.log(x)
 				}).fail(function(xhr, status, error){
@@ -1230,7 +1233,7 @@
 		             var form = document.createElement("form");
 		             form.setAttribute("method", "post");
 		             form.setAttribute("action", url);
-		             form.setAttribute("target", name);
+		             form.setAttribute("target", target);
 		  
 		             for (var i in params) {
 		                 if (params.hasOwnProperty(i)) {
