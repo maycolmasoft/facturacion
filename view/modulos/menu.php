@@ -80,6 +80,7 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("Sesiones",$controladores) ?>"><a href="index.php?controller=Sesiones&action=index">Sesiones</a></li>
             <li style="<?php echo getcontrolador("ConsultaRoles",$controladores) ?>"><a href="index.php?controller=ConsultaRoles&action=index">Roles de Pago</a></li>
+            <li style="<?php echo getcontrolador("ConsultaFactura",$controladores) ?>"><a href="index.php?controller=ConsultaFactura&action=index">Consultar Factura</a></li>
           
           </ul>
         </li>
