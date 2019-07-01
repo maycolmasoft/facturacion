@@ -341,8 +341,11 @@ class FacturarController extends ControladorBase{
 		$id_usuario =  isset($_SESSION['id_usuarios'])?$_SESSION['id_usuarios']:null;
 		 
 		if($id_usuario==null){ session_start(); $id_usuario=$_SESSION['id_usuarios'];}
+		
+		$_iva = isset($_POST['iva']) ? $_POST['iva'] : 0.12;
+		$_descuento = isset($_POST['descuento']) ? $_POST['descuento'] : 0.00;
 		 
-		 
+	    $subtotal = 0.00;
 		 
 		if($id_usuario != null)
 		{
@@ -411,61 +414,98 @@ class FacturarController extends ControladorBase{
 				 
 				$i=0;
 			    $valor_total_db=0; $valor_total_vista=0;
+			    $subtotal = 0.00;
 				 
 				foreach ($resultSet as $res)
 				{
 					
-					$valor_total_db=$res->total_temp_factura;
-					$valor_total_vista=$valor_total_vista+$valor_total_db;
+					
 					
 					$i++;
 					$html.='<tr>';
 					$html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->cantidad_temp_factura.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->precio_unitario_temp_factura.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->total_temp_factura.'</td>';
+					$html.='<td style="font-size: 11px; text-align:right; ">'.$res->precio_unitario_temp_factura.'</td>';
+					$html.='<td style="font-size: 11px; text-align:right; ">'.$res->total_temp_factura.'</td>';
 					$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="eliminar_temporal('.$res->id_temp_factura.')" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 					 
 					$html.='</tr>';
 					
+					$subtotal +=$res->total_temp_factura;
 					
-					$valor_total_db=0;
 				}
 				 
 				
 				$html.='<tr>';
-				$html.='<td class="text-right" colspan=2></td>';
-				$html.='<td class="text-right" colspan=1><b>SubTotal</b></td>';
-				$html.='<td class="text-left" style="font-size: 12px;">'.$valor_total_vista.'</td>';
+				$html.='<td class="text-right" colspan=3></td>';
+				$html.='<td class="text-right" colspan=1 style="margin-right:15px;"><b>SubTotal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$subtotal, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
-				$valor_iva=0; $valor_iva=$valor_total_vista*$_iva;
 				
 				$html.='<tr>';
-				$html.='<td class="text-right" colspan=2></td>';
-				
-				if ($_iva==0.12){
-						
-					$html.='<td class="text-right" colspan=1><b>Iva 12%</b></td>';
-						
-				}else{
-					$html.='<td class="text-right" colspan=1><b>Iva 14%</b></td>';
-						
-						
+				$html.='<td class="text-right" colspan=3></td>';
+				$html.='<td class="text-right" colspan=1>';
+				$html.='<div class="form-group" style="text-align: right;">';
+				$html.='<label for="iva" class="col-sm-9 control-label" style="text-align: right;"><b>Iva</b></label>';
+				$html.='<div class="col-sm-3">';
+				$html.='<select name="iva" id="iva" class="form-control" style="text-align: right; height:30px;">';
+				foreach($resultIva as $res) {
+				    if($res->porcentaje_iva == $_iva){
+				        $html.='<option value="'.$res->porcentaje_iva.'" selected >'.$res->nombre_iva.'</option>';
+				    }else{
+				        $html.='<option value="'.$res->porcentaje_iva.'" >'.$res->nombre_iva.'</option>';
+				    }
+				    
 				}
-				
-				$html.='<td class="text-left" style="font-size: 12px;">'.$valor_iva.'</td>';
+				$valorconiva = 0.00;
+				$valorconiva = $_iva * $subtotal;
+				$html.='</select>';
+				$html.='</div>';
+				$html.='</div>';
+				$html.='</td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valorconiva, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
-				$valor_FIN=0; $valor_FIN=$valor_total_vista+$valor_iva;
 				
 				$html.='<tr>';
-				$html.='<td class="text-right" colspan=2></td>';
-				$html.='<td class="text-right" colspan=1><b>TOTAL $</b></td>';
-				$html.='<td class="text-right" style="font-size: 12px;">'.$valor_FIN.'</td>';
-				
+				$html.='<td class="text-right" colspan=3></td>';
+				$html.='<td class="text-right" colspan=1>';
+				$html.='<div class="form-group" style="text-align: right;">';
+				$html.='<label for="descuento" class="col-sm-9 control-label" style="text-align: right;"><b>Descuento</b></label>';
+				$html.='<div class="col-sm-3">';
+				$html.='<select name="descuento" id="descuento" class="form-control" style="text-align: right; height:30px;">';
+				foreach($resultDesc as $res) {
+				    if($res->porcentaje_descuento == $_descuento){
+				        $html.='<option value="'.$res->porcentaje_descuento.'" selected >'.$res->nombre_descuento.'</option>';
+				    }else{
+				        $html.='<option value="'.$res->porcentaje_descuento.'" >'.$res->nombre_descuento.'</option>';
+				    }
+				   
+				}
+				$valorcondescuento = 0.00;
+				$valorcondescuento = $_descuento * $subtotal;
+				$html.='</select>';
+				$html.='</div>';
+				$html.='</div>';
+				$html.='</td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valorcondescuento, 2, ',', '.').'</td>';
 				$html.='</tr>';
+				
+				$valortotalFactura = 0.00;
+				$valortotalFactura = $subtotal+$valorconiva-$valorcondescuento;
+				$html.='<tr>';
+				$html.='<td class="text-right" colspan=3></td>';
+				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
+				$html.='</tr>';
+				
+				
+				
+				
+				
+				
 				
 				
 				$html.='</tbody>';
@@ -567,14 +607,21 @@ class FacturarController extends ControladorBase{
 				$html.='<div class="col-sm-3">';
 				$html.='<select name="iva" id="iva" class="form-control" style="text-align: right; height:30px;">';
 				foreach($resultIva as $res) {
-					$html.='<option value="'.$res->porcentaje_iva.'" >'.$res->nombre_iva.'</option>';
+				    if($res->porcentaje_iva == $_iva){
+				        $html.='<option value="'.$res->porcentaje_iva.'" selected >'.$res->nombre_iva.'</option>';
+				    }else{
+				        $html.='<option value="'.$res->porcentaje_iva.'" >'.$res->nombre_iva.'</option>';
+				    }
 				}
+				$valorconiva = 0.00;
+				$valorconiva = $_iva * $subtotal;
 				$html.='</select>';
 				$html.='</div>';
 				$html.='</div>';
 				$html.='</td>';
-				$html.='<td class="text-right" style="font-size: 12px;">0.00</td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valorconiva, 2, ',', '.').'</td>';
 				$html.='</tr>';
+				
 				
 				
 				$html.='<tr>';
@@ -585,23 +632,30 @@ class FacturarController extends ControladorBase{
 				$html.='<div class="col-sm-3">';
 				$html.='<select name="descuento" id="descuento" class="form-control" style="text-align: right; height:30px;">';
 				foreach($resultDesc as $res) {
-					$html.='<option value="'.$res->porcentaje_descuento.'" >'.$res->nombre_descuento.'</option>';
+				    if($res->porcentaje_descuento == $_descuento){
+				        $html.='<option value="'.$res->porcentaje_descuento.'" selected >'.$res->nombre_descuento.'</option>';
+				    }else{
+				        $html.='<option value="'.$res->porcentaje_descuento.'" >'.$res->nombre_descuento.'</option>';
+				    }
 				}
+				
+				$valorcondescuento = 0.00;
+				$valorcondescuento = $_descuento * $subtotal;
 				$html.='</select>';
 				$html.='</div>';
 				$html.='</div>';
 				$html.='</td>';
-				$html.='<td class="text-right" style="font-size: 12px;">0.00</td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valorcondescuento, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
 				
-				
-			
+				$valortotalFactura = 0.00;
+				$valortotalFactura = $subtotal+$valorconiva-$valorcondescuento;
 				
 				$html.='<tr>';
 				$html.='<td class="text-right" colspan=3></td>';
 				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
-				$html.='<td class="text-right" style="font-size: 12px;">0.00</td>';
+				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
 				
@@ -1039,8 +1093,69 @@ class FacturarController extends ControladorBase{
 		return $out;
 	}
 	
+	public function InsertaFactura(){
+	   	    
+	    $_id_clientes = $_POST['id_clientes'];
+	    $_id_usuarios = $_POST['id_usuarios'];
+	    $_id_tipo_pago = $_POST['id_tipo_pago'];
+	    $_fecha_factura = $_POST['fecha_factura_cabeza'];
+	    $_porcentaje_iva = $_POST['porcentaje_iva'];
+	    $_porcentaje_descuento = $_POST['porcentaje_descuento'];
+	    
+	    $respuesta = array();
+	    
+	    $Factura = new FacturaCabezaModel();	    
+	    
+	    $funcion = "ins_factura";
+	    $parametros = "$_id_usuarios,$_id_clientes,$_id_tipo_pago,'$_fecha_factura','$_porcentaje_iva','$_porcentaje_descuento'";
+	    
+	    try {
+	        
+	        $Factura->setFuncion($funcion);
+	        $Factura->setParametros($parametros);
+	        
+	        //echo $parametros;
+	        
+	        $resultado = $Factura -> llamafuncionPG();
+	        
+	        if(is_null($resultado))
+	            throw new Exception( "error al insertar Factura"); 
+	        
+            if ( $resultado[0] > 0 ){
+                
+                $respuesta['mensaje'] = "Factura Ingresada correctamente";
+                $respuesta['valor'] = 1;
+                $respuesta['id_factura'] = $resultado[0];
+                
+            }
+	        
+            echo json_encode($respuesta);
+	        
+	    } catch (Exception $e) {
+	        
+	        echo "<message>error generando cheque". $e->getMessage()."<message>";
+	    }
+	    	  
+	}
 	
 	
+	public function devuelveNumFactura(){
+	    
+	    $respuesta = array();
+	    
+	    $columnas = "lpad(valor_consecutivos::text,espacio_consecutivos,'0') numero_factura";
+	    $tablas = "public.consecutivos";
+	    $where =" nombre_consecutivos = 'FACTURA'";
+	    $id = "id_consecutivos";
+	    
+	    $Factura = new FacturaCabezaModel();
+	    
+	    $resultado = $Factura->getCondiciones($columnas,$tablas,$where,$id);
+	    
+	    $respuesta['valor'] = $resultado[0]->numero_factura;
+	    
+	    echo json_encode($respuesta);
+	}
 	
 	
 	

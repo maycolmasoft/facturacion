@@ -237,26 +237,43 @@
             <div class="tab-content">
             <br>
               <div class="tab-pane active" id="activos">
-                
+              
+              
+              	<form action="<?php echo $helper->url("Productos","generar_reporte"); ?>" method="post" target="_blank" class="col-lg-12 col-md-12 col-xs-12">
+                     
+              
+              
+                    <button type="submit"  id="reporte" name="reporte" class="btn btn-success" ><i class="fa fa-file-pdf-o"></i></button>
+                   
+                   
+                   
 					<div class="pull-right" style="margin-right:11px;">
 					<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_productos_activos(1)" placeholder="search.."/>
+					 
 					</div>
-					
+					</form>
 					
 					<div id="load_activos_registrados" ></div>	
 					<div id="productos_activos_registrados"></div>
                 
               </div>
               
+             
+                  	            	
+                                	
+          
+              
               <div class="tab-pane" id="inactivos">
                 
                     <div class="pull-right" style="margin-right:11px;">
 					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_productos_inactivos(1)" placeholder="search.."/>
 					</div>
+				
 					
 					<div id="load_inactivos_registrados" ></div>	
 					<div id="productos_inactivos_registrados"></div>
                 
+                	                  
                 
               </div>
              

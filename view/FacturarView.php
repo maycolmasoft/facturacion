@@ -67,7 +67,7 @@
         
                   
    <div class="box-body">
-     <form  action="<?php echo $helper->url("Facturar","InsertaFactura"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+     <form id="frm_factura" action="<?php echo $helper->url("Facturar","InsertaFactura"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
                                
                       		    
                     		   
@@ -146,6 +146,14 @@
                                                           <div id="mensaje_id_tipo_pago" class="errores"></div>
                                 </div>
                     		    </div>
+                    		    
+    		     <div class="col-lg-2 col-xs-12 col-md-2">
+        		    <div class="form-group">
+                          <label for="id_tipo_pago" class="control-label">Numero Factura:</label>
+                          <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="" readonly>
+                          <div id="mensaje_id_tipo_pago" class="errores"></div>
+                    </div>
+    		    </div>
                               
                               
                               
@@ -160,11 +168,11 @@
                             			<span  class = "fa fa-pencil-square" > </span> Agregar Productos
                           			</button>
                           			
-                          			<button  type = "submit"  id="Guardar" name="Guardar" class = "btn btn-default" >
+                          			<button  type = "button"  id="Guardar" name="Guardar" class = "btn btn-default" >
                             			<span  class = "glyphicon glyphicon-floppy-saved" > </span> Guardar Factura
                           			</button>
                           			
-                          			<button  type = "submit"  id="Cancelar" name="Cancelar" class = "btn btn-default" >
+                          			<button  type = "button"  id="Cancelar" name="Cancelar" class = "btn btn-default" >
                             			<span  class = "glyphicon glyphicon-floppy-remove" > </span> Cancelar
                           			</button>
                           			
@@ -252,7 +260,7 @@
      
         	   $(document).ready( function (){
         		   loadDetalleFactura();
-        		  
+        		   devuelveNumFactura();
 	   			});
 
 
@@ -295,6 +303,9 @@
 
        			
        		    $("#load_detalle_registrados").fadeIn('slow');
+
+       		    var _iva = $("#iva").val();
+       		    var _descuento = $("#descuento").val();
        		    
        		    $.ajax({
        		            beforeSend: function(objeto){
@@ -302,7 +313,7 @@
        		            },
        		            url: 'index.php?controller=Facturar&action=trae_temporal',
        		            type: 'POST',
-       		            data: {action:'ajax', page:pagina},
+       		            data: {action:'ajax', page:pagina, iva:_iva, descuento:_descuento},
        		            success: function(x){
        		              $("#detalle_registrados").html(x);
        		              $("#load_detalle_registrados").html("");
@@ -519,7 +530,7 @@
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
 		    
-		    $("#Guardar").click(function() 
+		    $("#Guardar").click(function(event) 
 			{
 				
 		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
@@ -1104,8 +1115,44 @@
 		            
 				}
 
-		    				    
+				var parametros = $("#frm_factura").serialize();
 
+				 var _iva = $("#iva").val();
+	       		 var _descuento = $("#descuento").val();
+
+				parametros += "&porcentaje_iva="+_iva+"&porcentaje_descuento="+_descuento;
+
+				console.log(parametros)
+				
+				//creacion de form y enviar datos
+				 var formReporte = $("<form>")
+				//termina crecion de form
+
+				$.ajax({
+					url:"index.php?controller=Facturar&action=InsertaFactura",
+					dataType:"json",
+					type:"POST",
+					data:parametros
+				}).done(function(x){
+
+					if(x.valor == 1){
+						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
+							})
+						var url="index.php?controller=ConsultaFactura&action=generar_reporte_factura";
+						var windowoption="";
+						var target = "blanck";
+						var params = { 'id_factura_cabeza' : x.id_factura};
+						OpenWindowWithPost(url, windowoption, target, params);
+						window.location.reload();
+						}
+					console.log(x)
+				}).fail(function(xhr, status, error){
+					var err = xhr.responseText
+					console.log(err)
+				})
+
+		    				    
+				return false;
 			}); 
 
 		    
@@ -1146,11 +1193,68 @@
 		        $( "#id_estado" ).focus(function() {
 					  $("#mensaje_id_estado").fadeOut("slow");
 				 });
+
+		        
+				
 		}); 
 
+		    $("#detalle_registrados").on("change","#descuento",function(){
+
+		    	loadDetalleFactura();
+				
+			})
+			
+			$("#detalle_registrados").on("change","#iva",function(){
+
+				loadDetalleFactura();
+				
+			})
+	
+	function devuelveNumFactura(){
+		var numFactura = $("#numero_factura");
+		$.ajax({
+			url:"index.php?controller=Facturar&action=devuelveNumFactura",
+			type:"POST",
+			dataType:"json",
+			data: null	
+			}).done(function(x){
+				numFactura.val(x.valor);
+				}).fail(function(xhr,status,error){
+					var err=xhr.responseText
+					console.log(err)
+					})
+			    }
+
+		    function OpenWindowWithPost(url, windowoption, target, params)
+		    {
+		             var form = document.createElement("form");
+		             form.setAttribute("method", "post");
+		             form.setAttribute("action", url);
+		             form.setAttribute("target", name);
+		  
+		             for (var i in params) {
+		                 if (params.hasOwnProperty(i)) {
+		                     var input = document.createElement('input');
+		                     input.type = 'hidden';
+		                     input.name = i;
+		                     input.value = params[i];
+		                     form.appendChild(input);
+		                 }
+		             }
+		             
+		             document.body.appendChild(form);
+		             
+		             //note I am using a post.htm page since I did not want to make double request to the page 
+		            //it might have some Page_Load call which might screw things up.
+		             //window.open("post.htm", name, windowoption);
+		             
+		             form.submit();
+		             
+		             document.body.removeChild(form);
+		     }
+
 	</script>
-        
-      
+     
    	
   </body>
 </html>   
