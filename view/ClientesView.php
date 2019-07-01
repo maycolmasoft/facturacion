@@ -52,7 +52,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Tipo Rubros</li>
+        <li class="active">Clientes</li>
       </ol>
     </section>   
 
@@ -874,7 +874,7 @@
 		    		$("#mensaje_id_tipo_identificacion").text("Seleccione Tipo");
 		    		$("#mensaje_id_tipo_identificacion").fadeIn("slow"); //Muestra mensaje de error
 
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_identificacion).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_identificacion).offset().top-120 }, tiempo);
 			        return false;
 			    }else{
    	
@@ -890,7 +890,7 @@
 		    		$("#mensaje_identificacion_clientes").text("Ingrese Identificación");
 		    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 
-		    		$("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 			        return false;
 			    }
 		    	else 
@@ -904,7 +904,7 @@
 							 $("#mensaje_identificacion_clientes").text("Ingrese solo números");
 					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 					            return false;
 					      }else{
 
@@ -921,7 +921,7 @@
 							$("#mensaje_identificacion_clientes").text("Ingrese 10 Digitos");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 						}
 
@@ -931,7 +931,7 @@
 							$("#mensaje_identificacion_clientes").text("El código de la provincia (dos primeros dígitos) es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 
 					      }else{
@@ -947,7 +947,7 @@
 							$("#mensaje_identificacion_clientes").text("El tercer dígito ingresado es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 					      }
 						else{
@@ -964,7 +964,7 @@
 					        	 $("#mensaje_identificacion_clientes").text("El número de cédula de la persona natural es incorrecto.");
 						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 						            return false;
 						       
 					         }else{
@@ -992,7 +992,7 @@
 							 $("#mensaje_identificacion_clientes").text("Ingrese solo números");
 					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 					            return false;
 					      }else{
 
@@ -1010,7 +1010,7 @@
 							$("#mensaje_identificacion_clientes").text("Ingrese 13 Digitos");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 						}
 
@@ -1020,7 +1020,7 @@
 							$("#mensaje_identificacion_clientes").text("El código de la provincia (dos primeros dígitos) es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 
 					      }else{
@@ -1036,7 +1036,7 @@
 							$("#mensaje_identificacion_clientes").text("El tercer dígito ingresado es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 					      }
 						else{
@@ -1055,7 +1055,7 @@
 					        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público debe terminar con 0001");
 						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 						            return false;
 
 						     }else{
@@ -1066,7 +1066,7 @@
 										$("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público es incorrecto.");
 							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 							            return false;
 							           
 						         } else{
@@ -1087,7 +1087,7 @@
 					    		   $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado debe terminar con 001");
 						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 						            return false;
 						                             
 						            
@@ -1101,7 +1101,7 @@
 						        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado es incorrecto");
 							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 							            return false;
 
 							     } else{
@@ -1122,7 +1122,7 @@
 					            $("#mensaje_identificacion_clientes").text("El ruc de la persona natural debe terminar con 001.");
 					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 					            return false;
 					            
 					         }else{
@@ -1130,7 +1130,7 @@
 					        		 $("#mensaje_identificacion_clientes").text("El ruc de la persona natural es incorrecto.");
 							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 							            return false;
 
 						        	 }else{
@@ -1146,7 +1146,7 @@
 					        	 $("#mensaje_identificacion_clientes").text("El ruc de la persona natural es incorrecto.");
 						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 						            return false;
 						       
 					         }else{
@@ -1176,7 +1176,7 @@
 			    	
 		    		$("#mensaje_razon_social_clientes").text("Introduzca Razón Social");
 		    		$("#mensaje_razon_social_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top-120 }, tiempo);
 			        
 			            return false;
 			    }
@@ -1197,7 +1197,7 @@
 						$("#mensaje_razon_social_clientes").text("Introduzca Razón Social Completa");
 			    		$("#mensaje_razon_social_clientes").fadeIn("slow"); //Muestra mensaje de error
 			           
-			            $("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top }, tiempo);
+			            $("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top-120 }, tiempo);
 			            return false;
 					}
 			    	
@@ -1211,7 +1211,7 @@
 			    	
 		    		$("#mensaje_celular_clientes").text("Ingrese # Celular");
 		    		$("#mensaje_celular_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top-120 }, tiempo);
 					
 			            return false;
 			    }
@@ -1227,7 +1227,7 @@
 						$("#mensaje_celular_clientes").text("Ingrese 10 dígitos");
 			    		$("#mensaje_celular_clientes").fadeIn("slow"); //Muestra mensaje de error
 			           
-			            $("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top }, tiempo);
+			            $("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top-120 }, tiempo);
 			            return false;
 					}
 
@@ -1242,7 +1242,7 @@
 			    	
 		    		$("#mensaje_correo_clientes").text("Introduzca un correo");
 		    		$("#mensaje_correo_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -1255,7 +1255,7 @@
 		    	{
 		    		$("#mensaje_correo_clientes").text("Introduzca un correo Valido");
 		    		$("#mensaje_correo_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top-120 }, tiempo);
 					
 			            return false;	
 			    }
@@ -1266,7 +1266,7 @@
 			    	
 		    		$("#mensaje_id_provincias").text("Seleccione");
 		    		$("#mensaje_id_provincias").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_provincias).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_provincias).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -1284,7 +1284,7 @@
 			    	
 		    		$("#mensaje_id_cantones").text("Seleccione");
 		    		$("#mensaje_id_cantones").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_cantones).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_cantones).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -1301,7 +1301,7 @@
 			    	
 		    		$("#mensaje_id_parroquias").text("Seleccione");
 		    		$("#mensaje_id_parroquias").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_parroquias).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_parroquias).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -1316,7 +1316,7 @@
 			    	
 		    		$("#mensaje_direccion_clientes").text("Ingrese Barrio");
 		    		$("#mensaje_direccion_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_direccion_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_direccion_clientes).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -1332,7 +1332,7 @@
 			    	
 		    		$("#mensaje_id_estado").text("Seleccione");
 		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_estado).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_estado).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }

@@ -150,7 +150,7 @@
 								     
                         		    
                         		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3">
+                        		     <div class="col-xs-12 col-md-2 col-md-2">
                         		   <div class="form-group">
                                                           <label for="id_rol" class="control-label">Rol:</label>
                                                           <select name="id_rol" id="id_rol"  class="form-control" >
@@ -163,7 +163,7 @@
                                     </div>
                                     </div>
                                     
-                                    <div class="col-xs-12 col-md-3 col-md-3">
+                                    <div class="col-xs-12 col-md-2 col-md-2">
                         		   <div class="form-group">
                                                           <label for="id_estado" class="control-label">Estado:</label>
                                                           <select name="id_estado" id="id_estado"  class="form-control" >

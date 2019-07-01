@@ -12,7 +12,6 @@ $controladores=$_SESSION['controladores'];
  		{
  			$display= "display:block";
  			break;
- 			
  		}
  	}
  	}
@@ -41,7 +40,7 @@ $controladores=$_SESSION['controladores'];
        </li>
         
         
-         <li class="treeview"  style="<?php echo getcontrolador("MenuMantenimiento",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("MenuMantenimiento",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder"></i> <span>Mantenimiento</span>
             <span class="pull-right-container">
@@ -49,20 +48,14 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-            <li style="<?php echo getcontrolador("TipoRubros",$controladores) ?>"><a href="index.php?controller=TipoRubros&action=index"><i class="fa fa-circle-o"></i>Tipo Rubros</a></li>
-            <li style="<?php echo getcontrolador("Departamentos",$controladores) ?>"><a href="index.php?controller=Departamentos&action=index"><i class="fa fa-circle-o"></i>Departamentos</a></li>
-            <li style="<?php echo getcontrolador("CargosDepartamentos",$controladores) ?>"><a href="index.php?controller=CargosDepartamentos&action=index"><i class="fa fa-circle-o"></i> Cargos Departamentos</a></li>
-            <li style="<?php echo getcontrolador("Formulas",$controladores) ?>"><a href="index.php?controller=Formulas&action=index"><i class="fa fa-circle-o"></i>Formulas</a></li>
-            <li style="<?php echo getcontrolador("Empleados",$controladores) ?>"><a href="index.php?controller=Empleados&action=index"><i class="fa fa-circle-o"></i> Empleados</a></li>
-            <li style="<?php echo getcontrolador("AsignacionEmpleados",$controladores) ?>"><a href="index.php?controller=AsignacionEmpleados&action=index"><i class="fa fa-circle-o"></i> Asignar Rubros Empleados</a></li>
-            <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=index"><i class="fa fa-circle-o"></i> Productos</a></li>
             <li style="<?php echo getcontrolador("Clientes",$controladores) ?>"><a href="index.php?controller=Clientes&action=index"><i class="fa fa-circle-o"></i> Clientes</a></li>
-           
+            <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=index"><i class="fa fa-circle-o"></i> Productos</a></li>
           </ul>
         </li>
         
        
-         <li class="treeview"  style="<?php echo getcontrolador("MenuContador",$controladores) ?>">
+       
+       <li class="treeview"  style="<?php echo getcontrolador("MenuProcesos",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder"></i> <span>Procesos</span>
             <span class="pull-right-container">
@@ -70,33 +63,14 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-           <li style="<?php echo getcontrolador("LecturasBiometrico",$controladores) ?>"><a href="index.php?controller=Procesos&action=index"><i class="fa fa-circle-o"></i>Subir Biometrico</a></li>
-            <li style="<?php echo getcontrolador("RubrosVariables",$controladores) ?>"><a href="index.php?controller=RubrosVariables&action=index"><i class="fa fa-circle-o"></i> Rubros Variables</a></li>
-            <li style="<?php echo getcontrolador("RolPagos",$controladores) ?>"><a href="index.php?controller=RolPagos&action=index"><i class="fa fa-circle-o"></i> Generar Rol Pagos</a></li>
-            <li style="<?php echo getcontrolador("CierreNomina",$controladores) ?>"><a href="index.php?controller=CierreNomina&action=index"><i class="fa fa-circle-o"></i> Cierre Nómina</a></li>
-         
+            <li style="<?php echo getcontrolador("Facturar",$controladores) ?>"><a href="index.php?controller=Facturar&action=index"><i class="fa fa-circle-o"></i> Facturar</a></li>
           </ul>
         </li>
         
        
-        <li class="treeview"  style="<?php echo getcontrolador("MenuAuditoria",$controladores) ?>">
-          <a href="#">
-            <i class="fa fa-folder"></i> <span>Auditoría</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li style="<?php echo getcontrolador("Sesiones",$controladores) ?>"><a href="index.php?controller=Sesiones&action=index">Sesiones</a></li>
-            <li style="<?php echo getcontrolador("ConsultaRoles",$controladores) ?>"><a href="index.php?controller=ConsultaRoles&action=index">Roles de Pago</a></li>
-          
-          </ul>
-        </li>
        
        
-       
-       
-       <li class="treeview"  style="<?php echo getcontrolador("MenuReportes",$controladores) ?>">
+        <li class="treeview"  style="<?php echo getcontrolador("MenuReportes",$controladores) ?>">
           <a href="#">
             <i class="fa fa-folder"></i> <span>Reportes</span>
             <span class="pull-right-container">
@@ -109,6 +83,8 @@ $controladores=$_SESSION['controladores'];
           
           </ul>
         </li>
+        
+        
       </ul>
 
 
