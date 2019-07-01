@@ -1135,14 +1135,17 @@
 
 					if(x.valor == 1){
 						
-						var url="index.php?controller=ConsultaFactura&action=generar_reporte_factura";
+						var url="index.php?controller=ConsultaFactura&action=generar_reporte_factura&id_factura_cabeza="+x.id_factura;
 						var windowoption="";
 						var target = "blank";
 						var params = { 'id_factura_cabeza' : x.id_factura};
+
+						console.log(x.id_factura)
 						
 						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
 							}).then(function(){
-								OpenWindowWithPost(url, windowoption, target, params);
+								//OpenWindowWithPost(url, windowoption, target, params);
+								window.open(url,target);
 								window.location.reload();
 								});
 						
