@@ -39,9 +39,16 @@
      
     </section>
 
-    <section class="content">
-     
-    </section>
+
+          <section class="content">
+            <div id='pone_users'></div>
+            <div id='pone_roles'></div>
+            <div id='pone_permisos'></div>
+            <div id='pone_sesiones'></div>
+          </section>
+
+
+    
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -52,6 +59,102 @@
     
    <?php include("view/modulos/links_js.php"); ?>
  
+ 	
+ 	 <script type="text/javascript">
+     
+        	   $(document).ready( function (){
+        		
+        		   pone_users();
+        		   pone_roles();
+        		   pone_permisos_roles();
+        		   cargar_sesiones();
+        		  
+	   			});
+        	
+        	   
+        	   function pone_users(){
+        		   $(document).ready( function (){
+        		       $.ajax({
+        		                 beforeSend: function(objeto){
+        		                   $("#pone_users").html('')
+        		                 },
+        		                 url: 'index.php?controller=Usuarios&action=cargar_global_usuarios',
+        		                 type: 'POST',
+        		                 data: null,
+        		                 success: function(x){
+        		                   $("#pone_users").html(x);
+        		                 },
+        		                error: function(jqXHR,estado,error){
+        		                  $("#pone_users").html("Ocurrio un error al cargar la informacion de usuarios..."+estado+"    "+error);
+        		                }
+        		              });
+        		     })
+        		  }
+        	   function pone_roles(){
+        		   $(document).ready( function (){
+        		       $.ajax({
+        		                 beforeSend: function(objeto){
+        		                   $("#pone_roles").html('')
+        		                 },
+        		                 url: 'index.php?controller=Usuarios&action=contar_roles',
+        		                 type: 'POST',
+        		                 data: null,
+        		                 success: function(x){
+        		                   $("#pone_roles").html(x);
+        		                 },
+        		                error: function(jqXHR,estado,error){
+        		                  $("#pone_roles").html("Ocurrio un error al cargar la informacion de roles..."+estado+"    "+error);
+        		                }
+        		              });
+        		     })
+        		  }
+        	   function pone_permisos_roles(){
+        		   $(document).ready( function (){
+        		       $.ajax({
+        		                 beforeSend: function(objeto){
+        		                   $("#pone_permisos").html('')
+        		                 },
+        		                 url: 'index.php?controller=Usuarios&action=cargar_permisos_roles',
+        		                 type: 'POST',
+        		                 data: null,
+        		                 success: function(x){
+        		                   $("#pone_permisos").html(x);
+        		                 },
+        		                error: function(jqXHR,estado,error){
+        		                  $("#pone_permisos").html("Ocurrio un error al cargar la informacion de permisos..."+estado+"    "+error);
+        		                }
+        		              });
+        		     })
+        		  }
+        	   function cargar_sesiones(){
+        		   $(document).ready( function (){
+        		       $.ajax({
+        		                 beforeSend: function(objeto){
+        		                   $("#pone_sesiones").html('')
+        		                 },
+        		                 url: 'index.php?controller=Usuarios&action=cargar_sesiones',
+        		                 type: 'POST',
+        		                 data: null,
+        		                 success: function(x){
+        		                   $("#pone_sesiones").html(x);
+        		                 },
+        		                error: function(jqXHR,estado,error){
+        		                  $("#pone_sesiones").html("Ocurrio un error al cargar la informacion de sesiones..."+estado+"    "+error);
+        		                }
+        		              });
+        		     })
+        		  }
+        
+        	   
+ 			
+ 		
+ 			
+        
+        	   
+        	 
+        	   
+        </script>
+ 	
  	
   </body>
 </html>

@@ -1017,44 +1017,219 @@ public function index(){
     			"allusers"=>$allusers
     	));
     }
-    public function Bienvenida(){
     
-    	session_start();
-    	
-    	if(isset($_SESSION['id_usuarios']))
-    	{
-    		$_usuario=$_SESSION['nombre_usuarios'];
-    		$_id_rol=$_SESSION['id_rol'];
-    		
-    		if($_id_rol==1){
-    				
-    		
-    			$this->view("BienvenidaAdmin",array(
-    					"allusers"=>$_usuario
-    			));
-    				
-    			die();
-    				
-    		}else{
-    				
-    			$this->view("Bienvenida",array(
-    					"allusers"=>$_usuario
-    			));
-    		
-    			die();
-    				
-    		}
-    		
-    		 
-    	}else{
-       	
-       	$this->redirect("Usuarios","sesion_caducada");
-       	
-       }
+    
+    
+    public function Bienvenida(){
+        
+        session_start();
+        
+        if(isset($_SESSION['id_usuarios']))
+        {
+            $_usuario=$_SESSION['nombre_usuarios'];
+            $_id_rol=$_SESSION['id_rol'];
+            
+            if($_id_rol==1){
+                
+                
+                $this->view("BienvenidaAdmin",array(
+                    "allusers"=>$_usuario
+                ));
+                
+                die();
+                
+            }else{
+                
+                $this->view("Bienvenida",array(
+                    "allusers"=>$_usuario
+                ));
+                
+                die();
+                
+            }
+            
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
     }
     
     
+    public function total_facturas()
+    {
+        session_start();
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $hoy = getdate();
+        $fecha_inicio=$hoy['year']."-".$hoy['mon']."-".$hoy['mday'];
+        $lastday = date('t',strtotime($fecha_inicio));
+        $fecha_fin=$hoy['year']."-".$hoy['mon']."-".$lastday;
+        $periodo=$meses[$hoy['mon']-1]." del ".$hoy['year'];
+        $id_rol=$_SESSION["id_rol"];
+        $i=0;
+        $factura_cabeza = new FacturaCabezaModel();
+        $columnas = "SUM (factura_cabeza.total_factura_cabeza)";
+        $tablas   = "public.factura_cabeza";
+        $where    = "factura_cabeza.fecha_factura_cabeza='".$fecha_inicio."'";
+        $id       = "sum";
+        $resultDia = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        if(!(empty($resultDia[0]->sum))) $total_dia= $resultDia[0]->sum;
+        else $total_dia="0.00";
+        
+        $columnas = "SUM (factura_cabeza.total_factura_cabeza)";
+        $tablas   = "public.factura_cabeza";
+        $where    = "factura_cabeza.fecha_factura_cabeza BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."'";
+        $id       = "sum";
+        $resultMes = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        if(!(empty($resultMes[0]->sum))) $total_mes= $resultMes[0]->sum;
+        else $total_mes="0.00";
+        
+        $html='<div class="col-lg-3 col-xs-6">
+        <!-- Widget: user widget style 1 -->
+        <div class="box box-widget widget-user-2">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-navy">
+        <i class="fa fa-shopping-cart fa-3x" style="float: left;"></i>
+        <h5 class="widget-user-username">Ventas</h3>
+        <h5 class="widget-user-desc">'.$periodo.'</h5>
+        </div>
+        <div class="box-footer no-padding">
+        <ul class="nav nav-stacked">
+        <li style="background-color: #2471A3"><a href="#"><font color="white">Ventas en el día </font><span class="pull-right badge bg-teal">'.$total_dia.'$</span></a></li>
+        <li style="background-color: #2471A3"><a href="#"><font color="white">Ventas en el mes </font><span class="pull-right badge bg-aqua">'.$total_mes.'$</span></a></li>
+        </ul>
+        </div>
+        </div>
+        <!-- /.widget-user -->
+        </div>';
+        
+        echo $html;
+        die();
+    }
     
+    public function total_productos()
+    {
+        session_start();
+        
+        $id_rol=$_SESSION["id_rol"];
+        $factura_cabeza = new FacturaCabezaModel();
+        $columnas = "COUNT (productos.id_productos)";
+        $tablas   = "public.productos";
+        $where    = "1=1";
+        $id       = "count";
+        $totalP = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        $columnas = "productos.nombre_productos ,COALESCE (SUM (factura_detalle.cantidad_factura_detalle),0) AS sum";
+        $tablas   = "public.factura_detalle FULL OUTER JOIN public.productos
+                     ON factura_detalle.id_productos = productos.id_productos";
+        $where    = "1=1 GROUP BY productos.nombre_productos";
+        $id       = "sum";
+        $detalleP = $factura_cabeza->getCondicionesSinOrder($columnas ,$tablas ,$where);
+                
+        $html='<div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-olive" style="height:184px">
+            <div class="inner">
+              <h3>Productos</h3>
+              <h3 style="float: left;margin-left:25px; margin-top: 20px;">'.$totalP[0]->count.'</h3>
+        <li class="dropdown messages-menu">
+        <button type="button" class="btn bg-olive" data-toggle="dropdown" style="margin-bottom: 6px; margin-top: 25px; margin-left: 6px;">
+        <i class="glyphicon glyphicon-collapse-down"></i>
+        </button>
+        <ul class="dropdown-menu scrollable-menu" style="background-color: #35825F">        
+        <li>
+        <table style = "width:100%; border-collapse: collapse;" border="1">
+        <tbody>';
+        foreach ($detalleP as $det) {
+            $html.='    <tr height = "25">
+                        <td style="font-size: 16px; text-align:center; background-color: #F2F3F4"><font color="black">'.$det->nombre_productos.'</font></td>
+                        <td style="font-size: 16px; text-align:center; background-color: #F2F3F4"><font color="black">'.$det->sum.'</font></td>
+                        </tr>';
+        }
+                
+               $html.='</tbody>
+        </table>
+        </ul>
+        </li>
+
+              
+
+            </div>
+            <div class="icon" style="margin-top: 40px;">
+              <i  class="fa fa-truck"></i>
+            </div>
+
+            <a href="index.php?controller=Productos&action=index" class="small-box-footer" style="margin-top: 20px;">
+              Operaciones con productos <i class="fa fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>';
+        
+        echo $html;
+        die();
+    }
+    
+    public function total_clientes()
+    {
+        session_start();
+        
+        $id_rol=$_SESSION["id_rol"];
+        $factura_cabeza = new FacturaCabezaModel();
+        $columnas = "COUNT (clientes.id_clientes)";
+        $tablas   = "public.clientes";
+        $where    = "1=1";
+        $id       = "count";
+        $totalP = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        $columnas = "clientes.razon_social_clientes";
+        $tablas   = "public.clientes";
+        $where    = "1=1";
+        $id       = "sum";
+        $detalleP = $factura_cabeza->getCondicionesSinOrder($columnas ,$tablas ,$where);
+        
+        $html='<div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-teal" style="height:184px">
+            <div class="inner">
+              <h3>Clientes</h3>
+              <h3 style="float: left;margin-left:25px; margin-top: 20px;">'.$totalP[0]->count.'</h3>
+        <li class="dropdown messages-menu">
+        <button type="button" class="btn bg-teal" data-toggle="dropdown" style="margin-bottom: 6px; margin-top: 25px; margin-left: 6px;">
+        <i class="glyphicon glyphicon-collapse-down"></i>
+        </button>
+        <ul class="dropdown-menu scrollable-menu bg-teal">
+        <li>
+        <table style = "width:100%; border-collapse: collapse;" border="1">
+        <tbody>';
+        foreach ($detalleP as $det) {
+            $html.='    <tr height = "25">
+                        <td style="font-size: 16px; text-align:center; background-color: #F2F3F4"><font color="black">'.$det->razon_social_clientes.'</font></td>
+                        </tr>';
+        }
+        
+        $html.='</tbody>
+        </table>
+        </ul>
+        </li>
+            
+            
+            
+            </div>
+            <div class="icon" style="margin-top: 40px;">
+              <i  class="fa fa-users"></i>
+            </div>
+            <a href="index.php?controller=Clientes&action=index" class="small-box-footer" style="margin-top: 20px;">
+              Operaciones con clientes <i class="fa fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>';
+        
+        echo $html;
+        die();
+    }
     
     public function Loguear(){
     	

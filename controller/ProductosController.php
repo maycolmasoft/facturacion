@@ -48,14 +48,14 @@ class ProductosController extends ControladorBase{
 				}
 				
 				$this->view("Productos",array(
-				    "resultEst"=>$resultEst, "resultEdit" =>$resultEdit,
+				    "resultEst"=>$resultEst, "resultEdit" =>$resultEdit
 			
 				));
 				
 			}
 			else
 			{
-			    $this->view_Core("Error",array(
+			    $this->view("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Productos"
 				
 				));
