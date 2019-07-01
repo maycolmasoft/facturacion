@@ -6,7 +6,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 
 $template = file_get_contents('view/reportes/template/ConsultaFactura.html');
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
+
 
 
 if(!empty($datos_reporte))

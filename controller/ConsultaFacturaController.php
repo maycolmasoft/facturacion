@@ -97,18 +97,18 @@ class ConsultaFacturaController extends ControladorBase{
             }
             
             $html="";
-            $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+            $resultSet=$consulta->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
             
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
             
-            $per_page = 10; //la cantidad de registros que desea mostrar
+            $per_page = 15; //la cantidad de registros que desea mostrar
             $adjacents  = 9; //brecha entre páginas después de varios adyacentes
             $offset = ($page - 1) * $per_page;
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$usuarios->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$consulta->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             
@@ -329,12 +329,12 @@ class ConsultaFacturaController extends ControladorBase{
         $datos_reporte['NOMBCLIENTE']=$rsdatos[0]->razon_social_clientes;
         $datos_reporte['CEDULACLIENTE']=$rsdatos[0]->identificacion_clientes;
         $datos_reporte['FECHAEMISION']=$rsdatos[0]->fecha_factura_cabeza;
-        $datos_reporte['SUBTOTAL']=$rsdatos[0]->subtotal_factura_cabeza;
+        $datos_reporte['SUBTOTAL']=number_format((float)$rsdatos[0]->subtotal_factura_cabeza, 2, ',', '.');
         $datos_reporte['PORCENTAJEDESCUENTOS']=$rsdatos[0]->porcentaje_descuento;
-        $datos_reporte['DESCUENTOS']=$rsdatos[0]->valor_descuento_factura_cabeza;
+        $datos_reporte['DESCUENTOS']=number_format((float)$rsdatos[0]->valor_descuento_factura_cabeza, 2, ',', '.');
         $datos_reporte['PORCENTAJEIVA']=$rsdatos[0]->porcentaje_iva;
-        $datos_reporte['IVA']=$rsdatos[0]->valor_iva_factura_cabeza;
-        $datos_reporte['TOTALFACT']=$rsdatos[0]->total_factura_cabeza;
+        $datos_reporte['IVA']=number_format((float)$rsdatos[0]->valor_iva_factura_cabeza, 2, ',', '.');
+        $datos_reporte['TOTALFACT']=number_format((float)$rsdatos[0]->total_factura_cabeza, 2, ',', '.');
             
         
         
@@ -395,8 +395,8 @@ class ConsultaFacturaController extends ControladorBase{
             $html.='<tr >';
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cantidad_factura_detalle.'</td>';
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->precio_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->total_factura_detalle.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.number_format((float)$res->precio_productos, 2, ',', '.').'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.number_format((float)$res->total_factura_detalle, 2, ',', '.').'</td>';
             
             
             $html.='</td>';
