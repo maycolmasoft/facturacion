@@ -50,6 +50,8 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("Clientes",$controladores) ?>"><a href="index.php?controller=Clientes&action=index"><i class="fa fa-circle-o"></i> Clientes</a></li>
             <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=index"><i class="fa fa-circle-o"></i> Productos</a></li>
+            <li style="<?php echo getcontrolador("Empresas",$controladores) ?>"><a href="index.php?controller=Empresas&action=index"><i class="fa fa-circle-o"></i>Empresas</a></li>
+         
           </ul>
         </li>
         
