@@ -7,7 +7,8 @@
     <title>Usuarios - Facturación</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
-      
+      <script lang=javascript src="view/js/xlsx.full.min.js"></script>
+   	<script lang=javascript src="view/js/FileSaver.min.js"></script> 
       
    <?php include("view/modulos/links_css.php"); ?>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -1277,7 +1278,7 @@
 	   	 var nombre;
        if (iddescarga==1)
        {
-      	 search=$("#search_activos").val();
+      	 search=$("#search").val();
       	 url='index.php?controller=Usuarios&action=excel10&search='+search;
       	 nombre="Listado Clientes Activos";            	 
            }
