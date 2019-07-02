@@ -498,7 +498,7 @@ class FacturarController extends ControladorBase{
 				$html.='<tr>';
 				$html.='<td class="text-right" colspan=3></td>';
 				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
-				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
+				$html.='<td id="trtotalFactura" class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
 				
@@ -655,7 +655,7 @@ class FacturarController extends ControladorBase{
 				$html.='<tr>';
 				$html.='<td class="text-right" colspan=3></td>';
 				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
-				$html.='<td class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
+				$html.='<td id="trtotalFactura" class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
 				
