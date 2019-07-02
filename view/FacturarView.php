@@ -1124,6 +1124,20 @@
 
 				console.log(parametros)
 				
+				var valorTotal = parseFloat( $("#trtotalFactura").text() );
+				
+				if ( valorTotal <= 0 ){
+					
+					swal( {
+						 title:"Detalle Factura",
+						 dangerMode: true,
+						 text: "ingrese Productos en detalle",
+						 icon: "error"
+						}
+					)
+					return false;
+				}
+				
 				
 
 				$.ajax({
