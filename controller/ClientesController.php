@@ -97,6 +97,7 @@ class ClientesController extends ControladorBase{
     			$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
     			$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
     			$html.='</div>';
+    			$html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(1)"><i class="glyphicon glyphicon-download-alt"></i></button>';
     			$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
     			$html.='<section style="height:425px; overflow-y:scroll;">';
     			$html.= "<table id='tabla_clientes' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
@@ -188,6 +189,104 @@ class ClientesController extends ControladorBase{
     	}
     
     
+    }
+    
+    public function excel10()
+    {
+            
+            session_start();
+            $id_rol=$_SESSION["id_rol"];
+            $clientes = new ClientesModel();
+            $where_to="";
+            $columnas = " clientes.id_clientes,
+					  clientes.razon_social_clientes,
+					  tipo_identificacion.id_tipo_identificacion,
+					  tipo_identificacion.nombre_tipo_identificacion,
+					  clientes.identificacion_clientes,
+					  provincias.id_provincias,
+					  provincias.nombre_provincias,
+					  cantones.id_cantones,
+					  cantones.nombre_cantones,
+					  parroquias.id_parroquias,
+					  parroquias.nombre_parroquias,
+					  clientes.direccion_clientes,
+					  clientes.telefono_clientes,
+					  clientes.celular_clientes,
+					  clientes.correo_clientes,
+					  estado.id_estado,
+					  estado.nombre_estado,
+					  clientes.creado";
+            
+            $tablas   = "public.clientes,
+					  public.parroquias,
+					  public.provincias,
+					  public.cantones,
+					  public.tipo_identificacion,
+					  public.estado";
+            
+            $id       = "clientes.id_clientes";
+            
+            
+            $where    = " clientes.id_tipo_identificacion = tipo_identificacion.id_tipo_identificacion AND
+					  clientes.id_provincias = provincias.id_provincias AND
+					  clientes.id_cantones = cantones.id_cantones AND
+					  clientes.id_parroquias = parroquias.id_parroquias AND
+					  clientes.id_estado = estado.id_estado AND clientes.id_estado=1";
+            
+            
+            
+            $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+            $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+            
+            
+            
+            
+            if($action == 'ajax')
+            {
+                
+                if(!empty($search)){
+                    
+                    
+                    $where1=" AND (clientes.identificacion_clientes LIKE '".$search."%' OR clientes.razon_social_clientes LIKE '".$search."%' OR tipo_identificacion.nombre_tipo_identificacion LIKE '".$search."%' OR provincias.nombre_provincias LIKE '".$search."%' OR cantones.nombre_cantones LIKE '".$search."%' OR parroquias.nombre_parroquias LIKE '".$search."%' OR clientes.correo_clientes LIKE '".$search."%' OR estado.nombre_estado LIKE '".$search."%')";
+                    
+                    $where_to=$where.$where1;
+                }else{
+                    
+                    $where_to=$where;
+                    
+                }
+                
+                $html="";
+                $resultSet=$clientes->getCantidad("*", $tablas, $where_to);
+                $cantidadResult=(int)$resultSet[0]->total;
+                
+                $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+                
+                $per_page = 50; //la cantidad de registros que desea mostrar
+                $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+                $offset = ($page - 1) * $per_page;
+                
+                $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+                
+                $resultSet=$clientes->getCondiciones($columnas, $tablas, $where_to, $id);
+                
+                $_respuesta=array();
+                
+                array_push($_respuesta, 'Tipo Ide', 'CI/Ruc', 'Razón Social','Correo','Celular','Provincia','Cantón','Parroquia', 'Estado');
+                
+                if(!empty($resultSet)){
+                    
+                    foreach ($resultSet as $res){
+                        
+                        array_push($_respuesta,$res->nombre_tipo_identificacion,$res->identificacion_clientes, $res->razon_social_clientes,$res->correo_clientes,
+                            $res->celular_clientes,$res->nombre_provincias,$res->nombre_cantones,$res->nombre_parroquias,$res->nombre_estado);
+                    }
+                    echo json_encode($_respuesta);
+                }
+                
+            }
+            
+            
     }
     
     
@@ -286,6 +385,7 @@ class ClientesController extends ControladorBase{
     			$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
     			$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
     			$html.='</div>';
+    			$html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(2)"><i class="glyphicon glyphicon-download-alt"></i></button>';
     			$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
     			$html.='<section style="height:425px; overflow-y:scroll;">';
     			$html.= "<table id='tabla_clientes' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
@@ -377,6 +477,104 @@ class ClientesController extends ControladorBase{
     	
     	
     	
+    }
+    
+    public function excel11()
+    {
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $clientes = new ClientesModel();
+        $where_to="";
+        $columnas = " clientes.id_clientes,
+					  clientes.razon_social_clientes,
+					  tipo_identificacion.id_tipo_identificacion,
+					  tipo_identificacion.nombre_tipo_identificacion,
+					  clientes.identificacion_clientes,
+					  provincias.id_provincias,
+					  provincias.nombre_provincias,
+					  cantones.id_cantones,
+					  cantones.nombre_cantones,
+					  parroquias.id_parroquias,
+					  parroquias.nombre_parroquias,
+					  clientes.direccion_clientes,
+					  clientes.telefono_clientes,
+					  clientes.celular_clientes,
+					  clientes.correo_clientes,
+					  estado.id_estado,
+					  estado.nombre_estado,
+					  clientes.creado";
+        
+        $tablas   = "public.clientes,
+					  public.parroquias,
+					  public.provincias,
+					  public.cantones,
+					  public.tipo_identificacion,
+					  public.estado";
+        
+        $id       = "clientes.id_clientes";
+        
+        
+        $where    = " clientes.id_tipo_identificacion = tipo_identificacion.id_tipo_identificacion AND
+					  clientes.id_provincias = provincias.id_provincias AND
+					  clientes.id_cantones = cantones.id_cantones AND
+					  clientes.id_parroquias = parroquias.id_parroquias AND
+					  clientes.id_estado = estado.id_estado AND clientes.id_estado=2";
+        
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (clientes.identificacion_clientes LIKE '".$search."%' OR clientes.razon_social_clientes LIKE '".$search."%' OR tipo_identificacion.nombre_tipo_identificacion LIKE '".$search."%' OR provincias.nombre_provincias LIKE '".$search."%' OR cantones.nombre_cantones LIKE '".$search."%' OR parroquias.nombre_parroquias LIKE '".$search."%' OR clientes.correo_clientes LIKE '".$search."%' OR estado.nombre_estado LIKE '".$search."%')";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$clientes->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 50; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$clientes->getCondiciones($columnas, $tablas, $where_to, $id);
+            
+            $_respuesta=array();
+            
+            array_push($_respuesta, 'Tipo Ide', 'CI/Ruc', 'Razón Social','Correo','Celular','Provincia','Cantón','Parroquia', 'Estado');
+            
+            if(!empty($resultSet)){
+                
+                foreach ($resultSet as $res){
+                    
+                    array_push($_respuesta, $res->identificacion_clientes, $res->razon_social_clientes,$res->correo_clientes,
+                        $res->celular_clientes,$res->nombre_provincias,$res->nombre_cantones,$res->nombre_parroquias,$res->nombre_estado);
+                }
+                echo json_encode($_respuesta);
+            }
+            
+        }
+        
+        
     }
     
     

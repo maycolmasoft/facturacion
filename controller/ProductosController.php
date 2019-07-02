@@ -202,6 +202,7 @@ class ProductosController extends ControladorBase{
 	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
+	            $html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(1)"><i class="glyphicon glyphicon-download-alt"></i></button>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
 	            $html.= "<table id='tabla_productos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -275,6 +276,65 @@ class ProductosController extends ControladorBase{
 	    }
 	}
 	
+	public function excel_productos_activos(){
+	    
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    
+	    $productos = new ProductosModel();
+	    
+	    
+	    $columnas = " productos.id_productos,
+                                      productos.nombre_productos,
+                                      productos.codigo_productos,
+                                      productos.precio_productos,
+                                      productos.creado,
+                                      productos.modificado";
+	    $tablas   =  "public.productos";
+	    $where    =  "productos.id_estado = 1";
+	    $id       = "productos.id_productos";
+	    
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $resultSet=$productos->getCondiciones($columnas, $tablas, $where_to, $id);
+
+	        $_respuesta=array();
+	        
+	        array_push($_respuesta, 'Código', 'Nombre', 'Precio');
+	        
+	        if(!empty($resultSet)){
+	            
+	            foreach ($resultSet as $res){
+	                
+	                array_push($_respuesta,$res->codigo_productos,$res->nombre_productos, $res->precio_productos);
+	            }
+	            echo json_encode($_respuesta);
+	        }
+	    }
+	}
+	
 	public function consulta_productos_inactivos(){
 
 
@@ -340,11 +400,12 @@ class ProductosController extends ControladorBase{
 			 
 			if($cantidadResult>0)
 			{
-				 
+			    
 				$html.='<div class="pull-left" style="margin-left:15px;">';
 				$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 				$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 				$html.='</div>';
+				$html.='<button type="submit"  id="reporte" name="reporte" class="btn btn-success pull-left" ><i class="fa fa-file-pdf-o"></i></button>';
 				$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 				$html.='<section style="height:425px; overflow-y:scroll;">';
 				$html.= "<table id='tabla_productos_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -415,6 +476,65 @@ class ProductosController extends ControladorBase{
 			 
 		}
 		
+	}
+	
+	public function excel_productos_inactivos(){
+	    
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    
+	    $productos = new ProductosModel();
+	    
+	    
+	    $columnas = " productos.id_productos,
+                                      productos.nombre_productos,
+                                      productos.codigo_productos,
+                                      productos.precio_productos,
+                                      productos.creado,
+                                      productos.modificado";
+	    $tablas   =  "public.productos";
+	    $where    =  "productos.id_estado = 2";
+	    $id       = "productos.id_productos";
+	    
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $resultSet=$productos->getCondiciones($columnas, $tablas, $where_to, $id);
+	        
+	        $_respuesta=array();
+	        
+	        array_push($_respuesta, 'Código', 'Nombre', 'Precio');
+	        
+	        if(!empty($resultSet)){
+	            
+	            foreach ($resultSet as $res){
+	                
+	                array_push($_respuesta,$res->codigo_productos,$res->nombre_productos, $res->precio_productos);
+	            }
+	            echo json_encode($_respuesta);
+	        }
+	    }
 	}
 	
 	
