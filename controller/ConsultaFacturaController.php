@@ -35,6 +35,8 @@ class ConsultaFacturaController extends ControladorBase{
     ));
     }
     
+    
+    
     public function Consulta_Factura(){
         
         
@@ -115,7 +117,6 @@ class ConsultaFacturaController extends ControladorBase{
             
             
             
-            
             if($cantidadResult>0)
             {
                 
@@ -123,6 +124,7 @@ class ConsultaFacturaController extends ControladorBase{
                 $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
                 $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
                 $html.='</div>';
+                $html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel()"><i class="glyphicon glyphicon-download-alt"></i></button>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<section style="height:425px; overflow-y:scroll;">';
                 $html.= "<table id='tabla_ConsultaFactura' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -261,6 +263,88 @@ class ConsultaFacturaController extends ControladorBase{
         
         $out.= "</ul>";
         return $out;
+    }
+    
+    public function Excel_Consulta_Factura(){
+        
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $usuarios= new UsuariosModel();
+        $consulta= new ConsultaFacturaModel();
+        $clientes= new ClientesModel();
+        $estadofactura= new EstadoFacturaModel();
+        
+        $where_to="";
+        $columnas = "
+                      factura_cabeza.id_factura_cabeza,
+                      clientes.id_clientes,
+                      clientes.razon_social_clientes,
+                      clientes.identificacion_clientes,
+                      factura_cabeza.numero_factura_cabeza,
+                      factura_cabeza.fecha_factura_cabeza,
+                      factura_cabeza.subtotal_factura_cabeza,
+                      factura_cabeza.total_factura_cabeza,
+                      usuarios.cedula_usuarios,
+                      usuarios.nombre_usuarios,
+                      estado_factura.id_estado_factura,
+                      estado_factura.nombre_estado_factura
+                      ";
+        $tablas   = "
+                      public.clientes,
+                      public.factura_cabeza,
+                      public.estado_factura,
+                      public.usuarios
+            
+                    ";
+        $where    = " factura_cabeza.id_clientes = clientes.id_clientes AND
+                      factura_cabeza.id_estado_factura = estado_factura.id_estado_factura AND
+                      usuarios.id_usuarios = factura_cabeza.id_usuarios";
+        
+        $id       = "factura_cabeza.id_factura_cabeza";
+        
+        
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (razon_social_clientes LIKE '%".$search."%' OR identificacion_clientes LIKE '%".$search."%' OR numero_factura_cabeza LIKE '%".$search."%')
+                ";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            $resultSet=$consulta->getCondiciones($columnas, $tablas, $where_to, $id);
+            
+            
+            $_respuesta=array();
+            
+            array_push($_respuesta, 'Cédula', 'Nombre', 'Número de Factura','Fecha','Valor','Usuario','Estado');
+            
+            if(!empty($resultSet)){
+                
+                foreach ($resultSet as $res){
+                    
+                    array_push($_respuesta,$res->identificacion_clientes,$res->razon_social_clientes, $res->numero_factura_cabeza,
+                        $res->fecha_factura_cabeza, $res->total_factura_cabeza,$res->nombre_usuarios,$res->nombre_estado_factura);
+                }
+                echo json_encode($_respuesta);
+            }
+            
+        }
+        
+        
     }
     
     public function generar_reporte_factura()

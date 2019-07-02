@@ -405,7 +405,7 @@ class ProductosController extends ControladorBase{
 				$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 				$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 				$html.='</div>';
-				$html.='<button type="submit"  id="reporte" name="reporte" class="btn btn-success pull-left" ><i class="fa fa-file-pdf-o"></i></button>';
+				$html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(2)"><i class="glyphicon glyphicon-download-alt"></i></button>';
 				$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 				$html.='<section style="height:425px; overflow-y:scroll;">';
 				$html.= "<table id='tabla_productos_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";

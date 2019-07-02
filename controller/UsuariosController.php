@@ -5,6 +5,78 @@ class UsuariosController extends ControladorBase{
         parent::__construct();
     }
     
+    public function excel10(){
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $usuarios = new UsuariosModel();
+        $where_to="";
+        $columnas = " usuarios.id_usuarios,
+								  usuarios.cedula_usuarios,
+								  usuarios.nombre_usuarios,
+								  usuarios.clave_usuarios,
+								  usuarios.pass_sistemas_usuarios,
+								  usuarios.telefono_usuarios,
+								  usuarios.celular_usuarios,
+								  usuarios.correo_usuarios,
+								  rol.id_rol,
+								  rol.nombre_rol,
+								  estado.id_estado,
+								  estado.nombre_estado,
+								  usuarios.fotografia_usuarios,
+								  usuarios.creado";
+        
+        $tablas   = "public.usuarios,
+								  public.rol,
+								  public.estado";
+        
+        $where    = " rol.id_rol = usuarios.id_rol AND
+								  estado.id_estado = usuarios.id_estado AND usuarios.id_estado=1";
+        
+        $id       = "usuarios.id_usuarios";
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' OR estado.nombre_estado LIKE '".$search."%')";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $resultSet=$usuarios->getCondiciones($columnas, $tablas, $where_to, $id);
+           
+            $_respuesta=array();
+            
+            array_push($_respuesta, 'Cédula', 'Nombre', 'Telefono','Celular','Correo','Rol','Estado');
+            
+            if(!empty($resultSet)){
+                
+                foreach ($resultSet as $res){
+       
+                    
+                    array_push($_respuesta,$res->cedula_usuarios,$res->nombre_usuarios, $res->telefono_usuarios,
+                        $res->celular_usuarios, $res->correo_usuarios,$res->nombre_rol,$res->nombre_estado);
+                }
+                echo json_encode($_respuesta);
+            }
+        }
+        
+        
+    }
     
     public function index10(){
     	 
@@ -85,6 +157,7 @@ class UsuariosController extends ControladorBase{
     		$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
     		$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
     		$html.='</div>';
+    		$html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(1)"><i class="glyphicon glyphicon-download-alt"></i></button>';
     		$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 			$html.='<section style="height:400px; overflow-y:scroll;">';
     		$html.= "<table id='tabla_usuarios_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
@@ -175,7 +248,78 @@ class UsuariosController extends ControladorBase{
     }
     
     
-    
+    public function excel11(){
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $usuarios = new UsuariosModel();
+        $where_to="";
+        $columnas = " usuarios.id_usuarios,
+								  usuarios.cedula_usuarios,
+								  usuarios.nombre_usuarios,
+								  usuarios.clave_usuarios,
+								  usuarios.pass_sistemas_usuarios,
+								  usuarios.telefono_usuarios,
+								  usuarios.celular_usuarios,
+								  usuarios.correo_usuarios,
+								  rol.id_rol,
+								  rol.nombre_rol,
+								  estado.id_estado,
+								  estado.nombre_estado,
+								  usuarios.fotografia_usuarios,
+								  usuarios.creado";
+        
+        $tablas   = "public.usuarios,
+								  public.rol,
+								  public.estado";
+        
+        $where    = " rol.id_rol = usuarios.id_rol AND
+								  estado.id_estado = usuarios.id_estado AND usuarios.id_estado=2";
+        
+        $id       = "usuarios.id_usuarios";
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' OR estado.nombre_estado LIKE '".$search."%')";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $resultSet=$usuarios->getCondiciones($columnas, $tablas, $where_to, $id);
+            
+            $_respuesta=array();
+            
+            array_push($_respuesta, 'Cédula', 'Nombre', 'Telefono','Celular','Correo','Rol','Estado');
+            
+            if(!empty($resultSet)){
+                
+                foreach ($resultSet as $res){
+                    
+                    
+                    array_push($_respuesta,$res->cedula_usuarios,$res->nombre_usuarios, $res->telefono_usuarios,
+                        $res->celular_usuarios, $res->correo_usuarios,$res->nombre_rol,$res->nombre_estado);
+                }
+                echo json_encode($_respuesta);
+            }
+        }
+        
+        
+    }
        
     
     
@@ -259,6 +403,7 @@ class UsuariosController extends ControladorBase{
     			$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
     			$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
     			$html.='</div>';
+    			$html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel(2)"><i class="glyphicon glyphicon-download-alt"></i></button>';
     			$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
     			$html.='<section style="height:400px; overflow-y:scroll;">';
     			$html.= "<table id='tabla_usuarios_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";

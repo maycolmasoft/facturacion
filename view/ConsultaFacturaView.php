@@ -4,12 +4,14 @@
         
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Capremci</title>
+    <title>Factura</title>
+    <script lang=javascript src="view/js/xlsx.full.min.js"></script>
+   	<script lang=javascript src="view/js/FileSaver.min.js"></script> 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+     
     <?php include("view/modulos/links_css.php"); ?>		
       
     	
@@ -120,6 +122,58 @@
 
     
 	<script type="text/javascript">
+	function DescargaExcel()
+    {
+   	
+   	 var search=$('#search_ConsultaFactura').val();
+   	 var  url='index.php?controller=ConsultaFactura&action=Excel_Consulta_Factura&search='+search;
+   	 var nombre='Consulta Facturas';
+      	 
+   				var con_datos={
+   						  search:search,
+   						  action:'ajax'
+   						  };
+   				$.ajax({
+   					url: url,
+   			        type : "POST",
+   			        async: true,			
+   					data: con_datos,
+   					success:function(data){
+   						console.log(data)
+   							
+   						if(data.length>3)
+   						   {
+   				  var array = JSON.parse(data);
+   				  var newArr = [];
+   				   while(array.length) newArr.push(array.splice(0,7));
+   				   console.log(newArr);
+   				   
+   				   var dt = new Date();
+   				   var m=dt.getMonth();
+   				   m+=1;
+   				   var y=dt.getFullYear();
+   				   var d=dt.getDate();
+   				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+   				   var wb =XLSX.utils.book_new();
+   				   wb.SheetNames.push(nombre);
+   				   var ws = XLSX.utils.aoa_to_sheet(newArr);
+   				   wb.Sheets[nombre] = ws;
+   				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+   				   function s2ab(s) { 
+   			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+   			            var view = new Uint8Array(buf);  //create uint8array as viewer
+   			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+   			            return buf;    
+   				   }
+   			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), nombre+fecha+'.xlsx');
+   					   }
+   				   else{
+   					   alert("No hay información para descargar");
+   				   }
+   					}
+   				});
+
+    }
      
         	   $(document).ready( function (){
         		   
@@ -161,6 +215,8 @@
 
 
 		   }
+
+	   
 
  </script>
 	

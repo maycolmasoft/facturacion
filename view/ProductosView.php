@@ -241,18 +241,10 @@
               
               
               	<form action="<?php echo $helper->url("Productos","generar_reporte"); ?>" method="post" target="_blank" class="col-lg-12 col-md-12 col-xs-12">
-                     
-              
-              
-                    
-                   
-                   
-                   
-					<div class="pull-right" style="margin-right:11px;">
+                   <div class="pull-right" style="margin-right:11px;">
 					<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_productos_activos(1)" placeholder="search.."/>
 					 
 					</div>
-					
 					
 					<div id="load_activos_registrados" ></div>	
 					<button type="submit"  id="reporte" name="reporte" class="btn btn-success pull-right" ><i class="fa fa-file-pdf-o"></i></button>

@@ -1268,6 +1268,71 @@
            }
         }, 200);
       }
+
+      function DescargaExcel(iddescarga)
+	    {
+	   	
+	   	 var search;
+	   	 var url;
+	   	 var nombre;
+       if (iddescarga==1)
+       {
+      	 search=$("#search_activos").val();
+      	 url='index.php?controller=Usuarios&action=excel10&search='+search;
+      	 nombre="Listado Clientes Activos";            	 
+           }
+       else
+       {
+      	 search=$("#search_inactivos").val();
+      	 url='index.php?controller=Usuarios&action=excel11&search='+search;
+      	 nombre="Listado Clientes Inactivos";
+           }
+	   	 
+	   				var con_datos={
+	   						  search:search,
+	   						  action:'ajax'
+	   						  };
+	   				$.ajax({
+	   					url: url,
+	   			        type : "POST",
+	   			        async: true,			
+	   					data: con_datos,
+	   					success:function(data){
+	   						console.log(data)
+	   							
+	   						if(data.length>3)
+	   						   {
+	   				  var array = JSON.parse(data);
+	   				  var newArr = [];
+	   				   while(array.length) newArr.push(array.splice(0,7));
+	   				   console.log(newArr);
+	   				   
+	   				   var dt = new Date();
+	   				   var m=dt.getMonth();
+	   				   m+=1;
+	   				   var y=dt.getFullYear();
+	   				   var d=dt.getDate();
+	   				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+	   				   var wb =XLSX.utils.book_new();
+	   				   wb.SheetNames.push(nombre);
+	   				   var ws = XLSX.utils.aoa_to_sheet(newArr);
+	   				   wb.Sheets[nombre] = ws;
+	   				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+	   				   function s2ab(s) { 
+	   			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+	   			            var view = new Uint8Array(buf);  //create uint8array as viewer
+	   			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+	   			            return buf;    
+	   				   }
+	   			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), nombre+fecha+'.xlsx');
+	   					   }
+	   				   else{
+	   					   alert("No hay información para descargar");
+	   				   }
+	   					}
+	   				});
+
+	    } 
     </script>
 
 	       <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
