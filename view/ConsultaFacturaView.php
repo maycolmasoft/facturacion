@@ -60,6 +60,8 @@
     
     
     <section class="content">
+       <form action="<?php echo $helper->url("ConsultaFactura","generar_reporte_general"); ?>" method="post" target="_blank" class="col-lg-12 col-md-12 col-xs-12">
+         
           <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Consultar Factura</h3>
@@ -69,6 +71,27 @@
                 
               </div>
             </div>
+                     
+              
+              
+                                
+            	<div class="col-lg-2 col-xs-12 col-md-2">
+                        		    <div class="form-group">
+                                                          <label for="desde" class="control-label">Desde:</label>
+                                                          <input type="date" class="form-control" id="desde" name="desde" value="" >
+                                                          <div id="mensaje_desde" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
+                        		    <div class="col-lg-2 col-xs-12 col-md-2">
+                        		    <div class="form-group">
+                                                          <label for="hasta" class="control-label">Hasta:</label>
+                                                          <input type="date" class="form-control" id="hasta" name="hasta" value="">
+                                                          <div id="mensaje_hasta" class="errores"></div>
+                                               
+                                    </div>
+                                    </div>
+                        
             
             <div class="box-body">
            <div class="nav-tabs-custom">
@@ -77,6 +100,8 @@
               
             </ul>
             
+            
+            
             <div class="col-md-5 col-lg-12 col-xs-5">
             <div class="tab-content">
             <br>
@@ -84,11 +109,16 @@
                 
 					<div class="pull-right" style="margin-right:15px;">
 						<input type="text" value="" class="form-control" id="search_ConsultaFactura" name="search_ConsultaFactura" onkeyup="load_ConsultaFactura(1)" placeholder="search.."/>
+					    <button type="submit"  id="reporte" name="reporte" class="btn btn-success" ><i class="fa fa-file-pdf-o"></i></button>
+                  <button type="button" id="buscar" name="buscar" class="btn btn-info"><i class="glyphicon glyphicon-search"></i></button>
+                
 					</div>
 					<div id="load_ConsultaFactura" ></div>	
 					<div id="clientes_registrados_detalle"></div>	
                 
               </div>
+              
+          
               
              
              
@@ -96,7 +126,7 @@
             </div>
             </div>
           </div>
-         
+             </form>
             
             </div>
             </div>

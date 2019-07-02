@@ -78,7 +78,10 @@ class ConsultaFacturaController extends ControladorBase{
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
         $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        $desde=  (isset($_REQUEST['desde'])&& $_REQUEST['desde'] !=NULL)?$_REQUEST['desde']:'';
+        $hasta=  (isset($_REQUEST['hasta'])&& $_REQUEST['hasta'] !=NULL)?$_REQUEST['hasta']:'';
         
+        $where2="";
         
         if($action == 'ajax')
         {
@@ -86,16 +89,30 @@ class ConsultaFacturaController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (razon_social_clientes LIKE '%".$search."%' OR identificacion_clientes LIKE '%".$search."%' OR numero_factura_cabeza LIKE '%".$search."%')
-                ";
+                if($desde!="" && $hasta!=""){
+                    
+                    $where2=" AND DATE(e.creado)  BETWEEN '$desde' AND '$hasta'";
+                    
+                    
+                }
                 
-                $where_to=$where.$where1;
+                $where1=" AND (razon_social_clientes LIKE '%".$search."%' OR identificacion_clientes LIKE '%".$search."%' OR numero_factura_cabeza LIKE '%".$search."%' OR nombre_usuarios LIKE '%".$search."%' OR nombre_estado_factura LIKE '%".$search."%')";
+          
+                $where_to=$where.$where1.$where2;
             }else{
+                if($desde!="" && $hasta!=""){
+                    
+                    $where2=" AND DATE(factura_cabeza.creado)  BETWEEN '$desde' AND '$hasta'";
+                    
+                }
                 
-                $where_to=$where;
+                $where_to=$where.$where2;
                 
             }
             
+            
+            
+               
             $html="";
             $resultSet=$consulta->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
@@ -416,6 +433,332 @@ class ConsultaFacturaController extends ControladorBase{
         
     }
     
+    public function generar_reporte_general(){
+        
+        session_start();
+        
+        $html="";
+        $id_usuarios = $_SESSION["id_usuarios"];
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/facturacion';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo_milenio.png';
+        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="50" height="50">';
+        $factura_cabeza = new FacturaCabezaModel;
+        
+        if(!empty($id_usuarios)){
+            
+            
+            if(isset($_POST["search_activos"]) ){
+                
+                
+                
+                $search = $_POST["search_activos"];
+                
+                $where_to="";
+                $where1="";
+                //$_id_productos = $_GET["id_productos"];
+                $columnas = " factura_cabeza.id_factura_cabeza,
+                      factura_cabeza.numero_factura_cabeza,
+                      factura_cabeza.fecha_factura_cabeza,
+                      factura_cabeza.id_factura_cabeza,
+                      factura_cabeza.subtotal_factura_cabeza,
+                      iva.id_iva,
+                      iva.porcentaje_iva,
+                      factura_cabeza.valor_iva_factura_cabeza,
+                      descuento.id_descuento,
+                      descuento.porcentaje_descuento,
+                      factura_cabeza.valor_descuento_factura_cabeza,
+                      factura_cabeza.total_factura_cabeza,
+                      clientes.razon_social_clientes,
+                      clientes.identificacion_clientes,
+                      estado_factura.id_estado_factura,
+                      estado_factura.nombre_estado_factura,
+                      tipo_pago.id_tipo_pago,
+                      tipo_pago.nombre_tipo_pago,
+                      empresa.id_empresa,
+                      empresa.nombre_empresa,
+                      empresa.ruc_empresa,
+                      empresa.direccion_empresa,
+                      empresa.sucursal_empresa,
+                      empresa.telefono_empresa,
+                      empresa.creado,
+                      empresa.modificado";
+                
+                $tablas = "   public.factura_cabeza,
+                      public.clientes,
+                      public.estado_factura,
+                      public.tipo_pago,
+                      public.empresa,
+                      public.iva,
+                      public.descuento";
+                $where= " factura_cabeza.id_clientes = clientes.id_clientes AND
+                  factura_cabeza.id_estado_factura = estado_factura.id_estado_factura AND
+                  factura_cabeza.id_tipo_pago = tipo_pago.id_tipo_pago AND
+                  factura_cabeza.id_empresa = empresa.id_empresa AND
+                  factura_cabeza.id_descuento = descuento.id_descuento AND
+                  iva.id_iva = factura_cabeza.id_iva
+                  AND factura_cabeza.id_factura_cabeza='$id_factura_cabeza'";
+                $id="factura_cabeza.id_factura_cabeza";
+                
+                $resultEdit = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+                
+                
+                
+                
+                if(!empty($search)){
+                    
+                    
+                    $where1=" AND (productos.codigo_productos LIKE '%".$search."%' OR productos.nombre_productos LIKE '%".$search."%')";
+                    
+                    $where_to=$where.$where1;
+                }else{
+                    
+                    $where_to=$where;
+                    
+                }
+                
+                
+                
+                
+                
+                
+                $resultSet=$productos->getCondicionesDesc($columnas, $tablas, $where_to, $id);
+                
+                
+                $html.='<p style="text-align: right;">'.$logo.'<hr style="height: 2px; background-color: black;"></p>';
+                $html.='<p style="text-align: right; font-size: 13px;"><b>Impreso:</b> '.$fechaactual.'</p>';
+                $html.='<p style="text-align: center; font-size: 16px;"><b>Factura</b></p>';
+                
+                
+                if(!empty($resultSet)){
+                    $cantidadResult=count($resultSet);
+                    
+                    
+                    $html.='<span style="text-align: left;  font-size: 15px;"><strong>Total Registros: </strong>'.$cantidadResult.'</span>';
+                    $html.= "<table style='width: 100%;' border=1 cellspacing=0>";
+                    $html.= "<thead>";
+                    $html.= "<tr>";
+                    $html.='<th style="text-align: left;  font-size: 13px;"></th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Código</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Precio</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Fecha Ingreso</th>';
+                    $html.='</tr>';
+                    $html.='</thead>';
+                    $html.='<tbody>';
+                    
+                    $i=0;
+                    $Excelente=0;
+                    $Bueno=0;
+                    $Reguar=0;
+                    $Malo=0;
+                    
+                    foreach ($resultSet as $res)
+                    {
+                        
+                        $i++;
+                        $html.='<tr>';
+                        $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                        $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+                        $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+                        $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
+                        $html.='<td style="font-size: 11px;">'.date("d/m/Y", strtotime($res->creado)).'</td>';
+                        $html.='</tr>';
+                    }
+                    
+                    
+                    $html.='</tbody>';
+                    $html.='</table>';
+                    
+                    
+                    
+                    
+                }
+                
+                
+                
+                $this->report("Productos",array( "resultSet"=>$html));
+                die();
+                
+                
+            }
+            
+            
+            
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+        
+        
+        
+        
+    }
+    public function search(){
+        
+        session_start();
+        
+        $factura_cabeza = new FacturaCabezaModel();
+        $where_to="";
+        $columnas = " factura_cabeza.id_factura_cabeza,
+                      factura_cabeza.numero_factura_cabeza,
+                      factura_cabeza.fecha_factura_cabeza,
+                      factura_cabeza.id_factura_cabeza,
+                      factura_cabeza.subtotal_factura_cabeza,
+                      iva.id_iva,
+                      iva.porcentaje_iva,
+                      factura_cabeza.valor_iva_factura_cabeza,
+                      descuento.id_descuento,
+                      descuento.porcentaje_descuento,
+                      factura_cabeza.valor_descuento_factura_cabeza,
+                      factura_cabeza.total_factura_cabeza,
+                      clientes.razon_social_clientes,
+                      clientes.identificacion_clientes,
+                      estado_factura.id_estado_factura,
+                      estado_factura.nombre_estado_factura,
+                      tipo_pago.id_tipo_pago,
+                      tipo_pago.nombre_tipo_pago,
+                      empresa.id_empresa,
+                      empresa.nombre_empresa,
+                      empresa.ruc_empresa,
+                      empresa.direccion_empresa,
+                      empresa.sucursal_empresa,
+                      empresa.telefono_empresa,
+                      empresa.creado,
+                      empresa.modificado";
+        
+        $tablas = "   public.factura_cabeza,
+                      public.clientes,
+                      public.estado_factura,
+                      public.tipo_pago,
+                      public.empresa,
+                      public.iva,
+                      public.descuento";
+        $where= " factura_cabeza.id_clientes = clientes.id_clientes AND
+                  factura_cabeza.id_estado_factura = estado_factura.id_estado_factura AND
+                  factura_cabeza.id_tipo_pago = tipo_pago.id_tipo_pago AND
+                  factura_cabeza.id_empresa = empresa.id_empresa AND
+                  factura_cabeza.id_descuento = descuento.id_descuento AND
+                  iva.id_iva = factura_cabeza.id_iva
+                  AND factura_cabeza.id_factura_cabeza='$id_factura_cabeza'";
+        $id="factura_cabeza.id_factura_cabeza";
+        
+        $resultEdit = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        $where2="";
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                
+                
+                $where1=" AND (productos.nombre_productos LIKE '%".$search."%' OR productos.codigo_productos LIKE '%".$search."%')";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$evaluacion->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 50; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$evaluacion->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:11px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:425px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_calificaciones_realizadas' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Fecha Registro</th>';
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                $i=0;
+                $Excelente=0;
+                $Bueno=0;
+                $Reguar=0;
+                $Malo=0;
+                foreach ($resultSet as $res)
+                {
+                    
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.date("d/m/Y", strtotime($res->creado)).'</td>';
+                    $html.='</tr>';
+                }
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_load_calificaciones("index.php", $page, $total_pages, $adjacents).'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay calificaciones registradas...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            echo $html;
+            die();
+            
+        }
+        
+    }
     
 }
 
