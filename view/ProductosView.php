@@ -10,7 +10,8 @@
  
    <?php include("view/modulos/links_css.php"); ?>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">	        
-   			        
+   	<script lang=javascript src="view/js/xlsx.full.min.js"></script>
+   	<script lang=javascript src="view/js/FileSaver.min.js"></script> 		        
     </head>
     
     
@@ -243,7 +244,7 @@
                      
               
               
-                    <button type="submit"  id="reporte" name="reporte" class="btn btn-success" ><i class="fa fa-file-pdf-o"></i></button>
+                    
                    
                    
                    
@@ -251,11 +252,13 @@
 					<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_productos_activos(1)" placeholder="search.."/>
 					 
 					</div>
-					</form>
+					
 					
 					<div id="load_activos_registrados" ></div>	
+					<button type="submit"  id="reporte" name="reporte" class="btn btn-success pull-right" ><i class="fa fa-file-pdf-o"></i></button>
 					<div id="productos_activos_registrados"></div>
-                
+					
+                </form>
               </div>
               
              
@@ -590,6 +593,71 @@
 	   		    });		      
 				    
 		}); 
+
+		    function DescargaExcel(iddescarga)
+		    {
+		   	
+		   	 var search;
+		   	 var url;
+		   	 var nombre;
+             if (iddescarga==1)
+             {
+            	 search=$("#search_activos").val();
+            	 url='index.php?controller=Productos&action=excel_productos_activos&search='+search;
+            	 nombre="Listado Productos Activos";
+                 }
+             else
+             {
+            	 search=$("#search_inactivos").val();
+            	 url='index.php?controller=Productos&action=excel_productos_inactivos&search='+search;
+            	 nombre="Listado Productos Inactivos";
+                 }
+		   	 
+		   				var con_datos={
+		   						  search:search,
+		   						  action:'ajax'
+		   						  };
+		   				$.ajax({
+		   					url: url,
+		   			        type : "POST",
+		   			        async: true,			
+		   					data: con_datos,
+		   					success:function(data){
+		   						console.log(data)
+		   							
+		   						if(data.length>3)
+		   						   {
+		   				  var array = JSON.parse(data);
+		   				  var newArr = [];
+		   				   while(array.length) newArr.push(array.splice(0,3));
+		   				   console.log(newArr);
+		   				   
+		   				   var dt = new Date();
+		   				   var m=dt.getMonth();
+		   				   m+=1;
+		   				   var y=dt.getFullYear();
+		   				   var d=dt.getDate();
+		   				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+		   				   var wb =XLSX.utils.book_new();
+		   				   wb.SheetNames.push(nombre);
+		   				   var ws = XLSX.utils.aoa_to_sheet(newArr);
+		   				   wb.Sheets[nombre] = ws;
+		   				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+		   				   function s2ab(s) { 
+		   			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+		   			            var view = new Uint8Array(buf);  //create uint8array as viewer
+		   			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+		   			            return buf;    
+		   				   }
+		   			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), nombre+fecha+'.xlsx');
+		   					   }
+		   				   else{
+		   					   alert("No hay información para descargar");
+		   				   }
+		   					}
+		   				});
+
+		    }
 
 	</script>
 
