@@ -3,7 +3,7 @@
  <?php
  
 $directorio = $_SERVER ['DOCUMENT_ROOT'];
-$dom=$directorio.'/rp_c/view/dompdf/dompdf_config.inc.php';
+$dom=$directorio.'/facturacion/view/dompdf/dompdf_config.inc.php';
 
 require_once( $dom);
 
