@@ -4,7 +4,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$template = file_get_contents('view/reportes/template/ConsultaFactura.html');
+$template = file_get_contents('view/reportes/template/ConsultaFacturaFinal.html');
 
 
 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	<title>Factura</title>
+  <style>
+  	
+  	div.cabecera{
+	margin-top:150px;
+	width:100%;
+	}
+  
+	div.izq{
+	left:0px;  width:49%; /*border: 1px solid blue;*/ float:left;
+	}
+	
+	div.izq1{
+	margin-left:50px;
+	}
+	
+	div.der{
+	right:0px;  width:49%; /*border: 1px solid black;*/ float:left;
+	
+	}
+	
+	div.der1{
+	margin-left:50px;
+	}
+	
+	div.tabla {
+	width:100%}
+	
+
+  </style>
+  
+  </head>
+  <body>
+  
+	
+	
+	
+	
+	<div class="cabecera">
+	<br><br><br><br><br><br><br><br><br><br>
+	<div class="izq">
+		
+			<div class="izq1">
+			{FECHAEMISION}
+			</div>
+			<div class="izq1">
+			{NOMBCLIENTE}
+			</div>
+			<div class="izq1">
+			{DIRCLIENTE}
+			</div>
+			
+	</div>
+	
+	<div class="der">
+	 	    <div class="der1">
+			{TELEFONO}
+			</div>
+			<div class="der1">
+			{CEDULACLIENTE}
+			</div>
+			<div class="der1">
+			{TIPOPAGO}
+			</div>
+	</div>
+	</div>
+	
+	
+	
+	
+	<div>
+	 {DETALLE_FACTURA}
+	</div>
+	<br>
+	<br>
+	<div class="izq">
+	
+	<div align="center" style="margin-top:10px; color:#000000; font-family:verdana; font-size:75%; width:100%;">
+				&nbsp;
+			</div>
+	
+	
+	</div>
+	
+	<div class="der2">
+	    <br> 
+	    <div id="divSerp"  style="{admi}">
+			<div style="color:#000000; font-family: verdana; font-size:100%; width:100%;">
+				<table>
+						<tr>
+						<td class="sub"><strong>&nbsp;</strong></td>
+						<td><strong>Subtotal:</strong></td>
+						<td class="sub">{SUBTOTAL}</td>
+						</tr>
+						<tr>
+						<td class="sub"><strong>&nbsp;</strong></td>
+						<td><strong>Descuentos:</strong></td>
+						<td class="sub">{DESCUENTOS}</td>
+						</tr>
+						<tr>
+						<td class="sub"><strong>&nbsp;</strong></td>
+						<td><strong>Iva &nbsp;{PORCENTAJEIVA}%:</strong></td>
+						<td class="sub">{IVA}</td>
+						</tr>
+						<tr>
+						<td class="sub"><strong>&nbsp;</strong></td>
+						<td><strong>Total:</strong></td>
+						<td class="sub">{TOTALFACT}</td>
+						</tr>
+						
+						
+				
+				</table>
+			</div>
+		</div>
+		
+    </div>
+	
+
+	<div></div> 
+  </body>
+  </html>

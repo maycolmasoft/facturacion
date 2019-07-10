@@ -388,7 +388,8 @@ class ConsultaFacturaController extends ControladorBase{
                       factura_cabeza.valor_descuento_factura_cabeza, 
                       factura_cabeza.total_factura_cabeza, 
                       clientes.razon_social_clientes, 
-                      clientes.identificacion_clientes, 
+                      clientes.identificacion_clientes,
+                      clientes.direccion_clientes, 
                       estado_factura.id_estado_factura, 
                       estado_factura.nombre_estado_factura, 
                       tipo_pago.id_tipo_pago, 
@@ -429,7 +430,9 @@ class ConsultaFacturaController extends ControladorBase{
         $datos_reporte['FECHAUTORIZ']=$rsdatos[0]->fecha_factura_cabeza;
         $datos_reporte['NOMBCLIENTE']=$rsdatos[0]->razon_social_clientes;
         $datos_reporte['CEDULACLIENTE']=$rsdatos[0]->identificacion_clientes;
+        $datos_reporte['DIRCLIENTE']=$rsdatos[0]->direccion_clientes;
         $datos_reporte['FECHAEMISION']=$rsdatos[0]->fecha_factura_cabeza;
+        $datos_reporte['TIPOPAGO']=$rsdatos[0]->nombre_tipo_pago;
         $datos_reporte['SUBTOTAL']=number_format((float)$rsdatos[0]->subtotal_factura_cabeza, 2, ',', '.');
         $datos_reporte['PORCENTAJEDESCUENTOS']=$rsdatos[0]->porcentaje_descuento;
         $datos_reporte['DESCUENTOS']=number_format((float)$rsdatos[0]->valor_descuento_factura_cabeza, 2, ',', '.');
