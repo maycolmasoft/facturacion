@@ -796,7 +796,7 @@ public function index(){
 		    	if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    	{
 		    			
-		    		$directorio = $_SERVER['DOCUMENT_ROOT'].'/nomina/fotografias_usuarios/';
+		    		$directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografias_usuarios/';
 		    			
 		    		$nombre = $_FILES['fotografia_usuarios']['name'];
 		    		$tipo = $_FILES['fotografia_usuarios']['type'];
@@ -833,7 +833,7 @@ public function index(){
 		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    {
 		    
-		    	$directorio = $_SERVER['DOCUMENT_ROOT'].'/nomina/fotografias_usuarios/';
+		    	$directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografias_usuarios/';
 		    
 		    	$nombre = $_FILES['fotografia_usuarios']['name'];
 		    	$tipo = $_FILES['fotografia_usuarios']['type'];
@@ -1644,7 +1644,7 @@ public function index(){
 					if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 					{
 					
-						$directorio = $_SERVER['DOCUMENT_ROOT'].'/nomina/fotografias_usuarios/';
+						$directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografias_usuarios/';
 					
 						$nombre = $_FILES['fotografia_usuarios']['name'];
 						$tipo = $_FILES['fotografia_usuarios']['type'];
