@@ -778,7 +778,6 @@ public function index(){
 		{
 			$_cedula_usuarios    = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
-			//$_usuario_usuario     = $_POST["usuario_usuario"];
 			$_clave_usuarios      = $usuarios->encriptar($_POST["clave_usuarios"]);
 			$_pass_sistemas_usuarios      = $_POST["clave_usuarios"];
 			$_telefono_usuarios   = $_POST["telefono_usuarios"];
@@ -786,7 +785,6 @@ public function index(){
 			$_correo_usuarios     = $_POST["correo_usuarios"];
 		    $_id_rol             = $_POST["id_rol"];
 		    $_id_estado          = $_POST["id_estado"];
-		    
 		    $_id_usuarios          = $_POST["id_usuarios"];
 		    
 		    

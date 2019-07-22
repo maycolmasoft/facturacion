@@ -209,6 +209,17 @@
                                                       <div id="mensaje_id_estado" class="errores"></div>
                                 </div>
                     		    </div>
+                    		    	    
+                        		    <div class="col-lg-4 col-xs-12 col-md-4">
+                        		    <div class="form-group">
+                                                          <label for="fotografia_clientes" class="control-label">Fotografía:</label>
+                                                          <input type="file" class="form-control" id="fotografia_clientes" name="fotografia_clientes" value="">
+                                                          <div id="" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		
+                    		    
+
                     		    
              </div>
                 
@@ -360,6 +371,13 @@
                                                           <div id="mensaje_id_estado" class="errores"></div>
                                 </div>
                     		    </div>
+                    		       <div class="col-lg-4 col-xs-12 col-md-4">
+                        		    <div class="form-group">
+                                                          <label for="fotografia_clientes" class="control-label">Fotografía:</label>
+                                                          <input type="file" class="form-control" id="fotografia_clientes" name="fotografia_clientes" value="">
+                                                          <div id="" class="errores"></div>
+                                    </div>
+                        		    </div>
                     		    
              </div>
                 

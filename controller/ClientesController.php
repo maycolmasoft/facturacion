@@ -26,7 +26,8 @@ class ClientesController extends ControladorBase{
 					  clientes.direccion_clientes, 
 					  clientes.telefono_clientes, 
 					  clientes.celular_clientes, 
-					  clientes.correo_clientes, 
+					  clientes.correo_clientes,
+                      clientes.fotografia_clientes, 
 					  estado.id_estado, 
 					  estado.nombre_estado, 
 					  clientes.creado";
@@ -112,6 +113,8 @@ class ClientesController extends ControladorBase{
     			$html.='<th style="text-align: left;  font-size: 12px;">Cantón</th>';
     			$html.='<th style="text-align: left;  font-size: 12px;">Parroquia</th>';
     			$html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+    			$html.='<th style="text-align: left;  font-size: 12px;">Fotografía</th>';
+    			
     
     			if($id_rol==1){
     				 
@@ -147,7 +150,9 @@ class ClientesController extends ControladorBase{
     				$html.='<td style="font-size: 11px;">'.$res->nombre_cantones.'</td>';
     				$html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
     				$html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-    				 
+    				$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_clientes.'&id_nombre=id_clientes&tabla=clientes&campo=fotografia_clientes" width="80" height="60"></td>';
+    				
+    				
     				if($id_rol==1){
     					 
     					$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Clientes&action=index&id_clientes='.$res->id_clientes.'" class="btn btn-success" title="Editar" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
@@ -213,6 +218,7 @@ class ClientesController extends ControladorBase{
 					  clientes.telefono_clientes,
 					  clientes.celular_clientes,
 					  clientes.correo_clientes,
+                      clientes.fotografia_clientes,
 					  estado.id_estado,
 					  estado.nombre_estado,
 					  clientes.creado";
@@ -314,6 +320,7 @@ class ClientesController extends ControladorBase{
 					  clientes.telefono_clientes,
 					  clientes.celular_clientes,
 					  clientes.correo_clientes,
+                      clientes.fotografia_clientes,
 					  estado.id_estado,
 					  estado.nombre_estado,
 					  clientes.creado";
@@ -400,6 +407,7 @@ class ClientesController extends ControladorBase{
     			$html.='<th style="text-align: left;  font-size: 12px;">Cantón</th>';
     			$html.='<th style="text-align: left;  font-size: 12px;">Parroquia</th>';
     			$html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+    			$html.='<th style="text-align: left;  font-size: 12px;">Fotografía</th>';
     	
     			if($id_rol==1){
     					
@@ -434,7 +442,8 @@ class ClientesController extends ControladorBase{
     				$html.='<td style="font-size: 11px;">'.$res->nombre_cantones.'</td>';
     				$html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
     				$html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-    					
+    				$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_clientes.'&id_nombre=id_clientes&tabla=clientes&campo=fotografia_clientes" width="80" height="60"></td>';
+    				
     				if($id_rol==1){
     	
     					$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Clientes&action=index&id_clientes='.$res->id_clientes.'" title="Editar" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
@@ -501,6 +510,7 @@ class ClientesController extends ControladorBase{
 					  clientes.telefono_clientes,
 					  clientes.celular_clientes,
 					  clientes.correo_clientes,
+                      clientes.fotografia_clientes,
 					  estado.id_estado,
 					  estado.nombre_estado,
 					  clientes.creado";
@@ -633,7 +643,8 @@ class ClientesController extends ControladorBase{
 								  clientes.direccion_clientes, 
 								  clientes.telefono_clientes, 
 								  clientes.celular_clientes, 
-								  clientes.correo_clientes, 
+								  clientes.correo_clientes,
+                                  clientes.fotografia_clientes, 
 								  estado.id_estado, 
 								  estado.nombre_estado, 
 								  clientes.creado";
@@ -733,9 +744,20 @@ class ClientesController extends ControladorBase{
 		    
 		    if($_id_clientes > 0){
 		    	
-		    	
-		    		
-		    		$colval = "id_tipo_identificacion='$_id_tipo_identificacion',
+		        if ($_FILES['fotografia_clientes']['tmp_name']!="")
+		        {
+		            
+		            $directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografia_clientes/';
+		            
+		            $nombre = $_FILES['fotografia_clientes']['name'];
+		            $tipo = $_FILES['fotografia_clientes']['type'];
+		            $tamano = $_FILES['fotografia_clientes']['size'];
+		            
+		            move_uploaded_file($_FILES['fotografia_clientes']['tmp_name'],$directorio.$nombre);
+		            $data = file_get_contents($directorio.$nombre);
+		            $_fotografia_clientes = pg_escape_bytea($data);
+		        
+		        	$colval = "id_tipo_identificacion='$_id_tipo_identificacion',
 		    		identificacion_clientes= '$_identificacion_clientes',
 		    		razon_social_clientes = '$_razon_social_clientes',
 		    		telefono_clientes = '$_telefono_clientes',
@@ -745,17 +767,51 @@ class ClientesController extends ControladorBase{
 		    		id_cantones = '$_id_cantones',
 		    		id_parroquias= '$_id_parroquias',
 		    		direccion_clientes='$_direccion_clientes',
-		    		id_estado='$_id_estado'";
+		    		id_estado='$_id_estado,
+                    fotografia_clientes='$_fotografia_clientes'";
 		    		$tabla = "clientes";
 		    		$where = "id_clientes = '$_id_clientes'";
 		    		$resultado=$clientes->UpdateBy($colval, $tabla, $where);
 		    		 
-		    		
+		        }
 		   
-		    	
+		        else {
+		            
+		            $colval = "id_tipo_identificacion='$_id_tipo_identificacion',
+		    		identificacion_clientes= '$_identificacion_clientes',
+		    		razon_social_clientes = '$_razon_social_clientes',
+		    		telefono_clientes = '$_telefono_clientes',
+		    		celular_clientes = '$_celular_clientes',
+		    		correo_clientes = '$_correo_clientes',
+		    		id_provincias = '$_id_provincias',
+		    		id_cantones = '$_id_cantones',
+		    		id_parroquias= '$_id_parroquias',
+		    		direccion_clientes='$_direccion_clientes',
+		    		id_estado='$_id_estado";
+		            $tabla = "clientes";
+		            $where = "id_clientes = '$_id_clientes'";
+		            $resultado=$clientes->UpdateBy($colval, $tabla, $where);
+		            
+		    		 
+		        }
 		    		
 		    	
 		    }else{
+		        
+		        if ($_FILES['fotografia_clientes']['tmp_name']!="")
+		        {
+		            
+		            $directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografia_clientes/';
+		            
+		            $nombre = $_FILES['fotografia_clientes']['name'];
+		            $tipo = $_FILES['fotografia_clientes']['type'];
+		            $tamano = $_FILES['fotografia_clientes']['size'];
+		            
+		            move_uploaded_file($_FILES['fotografia_clientes']['tmp_name'],$directorio.$nombre);
+		            $data = file_get_contents($directorio.$nombre);
+		            $_fotografia_clientes = pg_escape_bytea($data);
+		            
+		            
 		    	
 
 		    		
@@ -771,13 +827,69 @@ class ClientesController extends ControladorBase{
 		    		'$_telefono_clientes',
 		    		'$_celular_clientes',
 		    		'$_correo_clientes',
-		    		'$_id_estado'";
+		    		'$_id_estado',
+                    '$_fotografia_clientes'";
 		    		$clientes->setFuncion($funcion);
 		    		$clientes->setParametros($parametros);
 		    		$resultado=$clientes->Insert();
 		    		 
 		    
-		        	
+		        }
+		        
+		        
+		        else {
+		            
+		            $where_TO = "identificacion_clientes = '$_identificacion_clientes'";
+		            $result=$clientes->getBy($where_TO);
+		            
+		            if ( !empty($result) )
+		            {
+		                
+		                $colval = "id_tipo_identificacion='$_id_tipo_identificacion',
+    		    		identificacion_clientes= '$_identificacion_clientes',
+    		    		razon_social_clientes = '$_razon_social_clientes',
+    		    		telefono_clientes = '$_telefono_clientes',
+    		    		celular_clientes = '$_celular_clientes',
+    		    		correo_clientes = '$_correo_clientes',
+    		    		id_provincias = '$_id_provincias',
+    		    		id_cantones = '$_id_cantones',
+    		    		id_parroquias= '$_id_parroquias',
+    		    		direccion_clientes='$_direccion_clientes',
+		    		id_estado='$_id_estado";
+		                $tabla = "clientes";
+		                $where = "identificacion_clientes = '$_identificacion_clientes'";
+		                $resultado=$clientes->UpdateBy($colval, $tabla, $where);
+		            
+		            
+		            }
+		                
+		            else{
+		                
+		                $_fotografia_clientes="";
+		                
+		                
+		                
+		                $funcion = "ins_clientes";
+		                $parametros = "'$_razon_social_clientes',
+		    		'$_id_tipo_identificacion',
+		    		'$_identificacion_clientes',
+		    		'1',
+		    		'$_id_provincias',
+		    		'$_id_cantones',
+		    		'$_id_parroquias',
+		    		'$_direccion_clientes',
+		    		'$_telefono_clientes',
+		    		'$_celular_clientes',
+		    		'$_correo_clientes',
+		    		'$_id_estado',
+                    '$_fotografia_clientes'";
+		                $clientes->setFuncion($funcion);
+		                $clientes->setParametros($parametros);
+		                $resultado=$clientes->Insert();
+		            }
+		            
+		            
+		        }
 		        	
 		        
 		  }
@@ -854,6 +966,7 @@ class ClientesController extends ControladorBase{
 			$respuesta->celular_clientes = $resultSet[0]->celular_clientes;
 			$respuesta->correo_clientes = $resultSet[0]->correo_clientes;
 			$respuesta->id_estado = $resultSet[0]->id_estado;
+			$respuesta->id_estado = $resultSet[0]->fotografia_clientes;
 			
 			
 			echo json_encode($respuesta);
