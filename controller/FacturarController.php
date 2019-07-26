@@ -4,8 +4,10 @@ class FacturarController extends ControladorBase{
     public function __construct() {
         parent::__construct();
     }
-    
-	public function index(){
+
+      
+		public function index(){
+
 	
 		session_start();
 		if (isset(  $_SESSION['id_usuarios']) )

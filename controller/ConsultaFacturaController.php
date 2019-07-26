@@ -481,15 +481,17 @@ class ConsultaFacturaController extends ControladorBase{
         
         $html='';
         
-        
-        $html.='<table class="info" style="width:100%;" border=1>';
+        $html.='<br>';
+        $html.='<br>';
+        $html.='<br>';
+        $html.='<table class="info" style="width:100%;" align="center" border=0>';
         $html.='<tr>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Cantidad</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio Unitario</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Total</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
         $html.='</tr>';
-        
+            
         
         
         
