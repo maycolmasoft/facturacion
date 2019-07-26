@@ -5,14 +5,7 @@ class FacturarController extends ControladorBase{
         parent::__construct();
     }
     
-    
-    
-    
-    
-    
-    
-  
-    
+      
 		public function index(){
 	
 		session_start();
