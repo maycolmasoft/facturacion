@@ -22,9 +22,6 @@
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
     
-    
-      
-    
     <div class="wrapper">
 
   <header class="main-header">
@@ -108,21 +105,28 @@
                                                       <div id="mensaje_correo_clientes" class="errores"></div>
                                 </div>
                     		    </div>
+                    		    
+                    		    <div class="col-lg-2 col-xs-12 col-md-2">
+                        		    <div class="form-group">
+                                          <label for="id_tipo_pago" class="control-label">Numero Factura:</label>
+                                          <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="" readonly>
+                                          <div id="mensaje_id_tipo_pago" class="errores"></div>
+                                    </div>
+                    		    </div>
+                    		   
                                   
                                 </div>
                                 
                                 
-                                <div class="row">  
+                                <div class="row"> 
                                 
-                                <div class="col-lg-2 col-xs-12 col-md-2">
+                                 <div class="col-lg-2 col-xs-12 col-md-2">
                     		    <div class="form-group">
                                                       <label for="fecha_factura_cabeza" class="control-label">Fecha:</label>
                                                       <input type="date" class="form-control" id="fecha_factura_cabeza" name="fecha_factura_cabeza" value="<?php echo date('Y-m-d');?>">
                                                       <div id="mensaje_fecha_factura_cabeza" class="errores"></div>
                                 </div>
-                    		    </div>
-                                  
-                                  
+                    		    </div>          
                                   
                                 <div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
@@ -147,16 +151,28 @@
                                 </div>
                     		    </div>
                     		    
-    		     <div class="col-lg-2 col-xs-12 col-md-2">
-        		    <div class="form-group">
-                          <label for="id_tipo_pago" class="control-label">Numero Factura:</label>
-                          <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="" readonly>
-                          <div id="mensaje_id_tipo_pago" class="errores"></div>
-                    </div>
-    		    </div>
-                              
-                              
-                              
+                    		    <div class="col-lg-2 col-xs-12 col-md-2">
+                        		    <div class="form-group">
+                                      <label for="plazo_pago" class="control-label">Plazo Meses:</label>
+                                      <select name="plazo_pago" id="plazo_pago"  class="form-control" disabled >                                      
+    									<option value="1" >1</option>
+    									<option value="2" >2</option>
+    									<option value="3" >3</option>
+    									<option value="4" >4</option>
+    									<option value="5" >5</option>
+    									<option value="6" >6</option>
+    									<option value="7" >7</option>
+    									<option value="8" >8</option> 
+    									<option value="9" >9</option>
+    									<option value="10" >10</option>
+    									<option value="11" >11</option>
+    									<option value="12" >12</option>          						        
+        							  </select> 
+                                      <div id="mensaje_plazo_pago" class="errores"></div>
+                                    </div>
+                    		    </div>
+                    		    
+    		     
                     			            
               </div>
                     	  
@@ -430,11 +446,14 @@
         
         
           
-        <script>
-        
+<script>        
 
-	       	$(document).ready(function(){
-        	       		
+   	$(document).ready(function(){
+
+   	   	if($("#id_tipo_pago option:selected").text().toUpperCase().trim() == "CREDITO"){
+   	   	   	$("#plazo_pago").attr("disabled",false);
+   	   	}
+   	   	
 						$( "#identificacion_clientes" ).autocomplete({
 		      				source: "<?php echo $helper->url("Facturar","AutocompleteCedula"); ?>",
 		      				minLength: 1
@@ -547,6 +566,7 @@
 		    	var id_parroquias       = $("#id_parroquias").val();
 		    	var direccion_clientes  = $("#direccion_clientes").val();
                 var id_estado           = $("#id_estado").val();
+                var plazo_pago			= $("#plazo_pago");
               
 		    	var contador=0;
 		    	var tiempo = tiempo || 1000;
@@ -1115,7 +1135,8 @@
 		            
 				}
 
-				var parametros = $("#frm_factura").serialize();
+		    	
+				var parametros = $("#frm_factura").serialize();					
 
 				 var _iva = $("#iva").val();
 	       		 var _descuento = $("#descuento").val();
@@ -1272,6 +1293,13 @@
 		             
 		             document.body.removeChild(form);
 		     }
+
+	$("#id_tipo_pago").on("change",function(){
+		$valor = $(this).find("option:selected").text().toUpperCase();
+		if($valor.trim() == "CREDITO"){
+			$("#plazo_pago").attr("disabled",false);
+		}else{ $("#plazo_pago").attr("disabled",true);}
+	});
 
 	</script>
      

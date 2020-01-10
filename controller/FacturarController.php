@@ -4,9 +4,10 @@ class FacturarController extends ControladorBase{
     public function __construct() {
         parent::__construct();
     }
-    
+
       
 		public function index(){
+
 	
 		session_start();
 		if (isset(  $_SESSION['id_usuarios']) )
@@ -1093,36 +1094,81 @@ class FacturarController extends ControladorBase{
 	    $_id_tipo_pago = $_POST['id_tipo_pago'];
 	    $_fecha_factura = $_POST['fecha_factura_cabeza'];
 	    $_porcentaje_iva = $_POST['porcentaje_iva'];
-	    $_porcentaje_descuento = $_POST['porcentaje_descuento'];
+	    $_porcentaje_descuento = $_POST['porcentaje_descuento'];	    
+	    $_plazo_pago = $_POST['plazo_pago'];
+	    $_numero_factura = $_POST['numero_factura'];
 	    
 	    $respuesta = array();
 	    
-	    $Factura = new FacturaCabezaModel();	    
-	    
-	    $funcion = "ins_factura";
-	    $parametros = "$_id_usuarios,$_id_clientes,$_id_tipo_pago,'$_fecha_factura','$_porcentaje_iva','$_porcentaje_descuento'";
+	    $Factura = new FacturaCabezaModel();
 	    
 	    try {
 	        
-	        $Factura->setFuncion($funcion);
-	        $Factura->setParametros($parametros);
+	        //validar tipo de pago 
+	        $nombreTipoPago = "";
+	        $queryTipoPago = "SELECT * FROM public.tipo_pago WHERE id_tipo_pago = $_id_tipo_pago LIMIT 1";
+	        $rsTipoPago = $Factura->enviaquery($queryTipoPago);
+	        if(!empty($rsTipoPago)){
+	            $nombreTipoPago = $rsTipoPago[0]->nombre_tipo_pago;
+	            $nombreTipoPago = strtoupper($nombreTipoPago);
+	        }
 	        
-	        //echo $parametros;
+	        //validacion de numero de factura
+	        $queryNumeroFactura = "select 1 from factura_cabeza where numero_factura_cabeza = '$_numero_factura'";
+	        $rsValidaNumero= $Factura->enviaquery($queryNumeroFactura);
+	        if(!empty($rsTipoPago)){
+	           
+	            echo '<message>Numero de Factura ya se encuentra registrado<message>';
+	            die();
+	        }
 	        
-	        $resultado = $Factura -> llamafuncionPG();
-	        
-	        if(is_null($resultado))
-	            throw new Exception( "error al insertar Factura"); 
-	        
-            if ( $resultado[0] > 0 ){
+	        if( $nombreTipoPago == 'EFECTIVO' ){
+	            
+	            $funcion = "ins_factura";
+	            $parametros = "$_id_usuarios,$_id_clientes,$_id_tipo_pago,'$_fecha_factura','$_porcentaje_iva','$_porcentaje_descuento',$_numero_factura";
+	            $Factura->setFuncion($funcion);
+	            $Factura->setParametros($parametros);
+	            
+	            $resultado = $Factura -> llamafuncionPG();
+	            
+	            if(is_null($resultado))
+	                throw new Exception( "error al insertar Factura");
+	                
+                if ( $resultado[0] > 0 ){
+                    
+                    $respuesta['mensaje'] = "Factura Ingresada correctamente";
+                    $respuesta['valor'] = 1;
+                    $respuesta['id_factura'] = $resultado[0];
+                    
+                }
+                echo json_encode($respuesta); die();
                 
-                $respuesta['mensaje'] = "Factura Ingresada correctamente";
-                $respuesta['valor'] = 1;
-                $respuesta['id_factura'] = $resultado[0];
-                
-            }
+	        }elseif($nombreTipoPago == "CREDITO"){
+	            
+	            $funcion = "ins_factura";
+	            $parametros = "$_id_usuarios,$_id_clientes,$_id_tipo_pago,'$_fecha_factura','$_porcentaje_iva','$_porcentaje_descuento',$_numero_factura";
+	            $Factura->setFuncion($funcion);
+	            $Factura->setParametros($parametros);
+	            
+	            $resultado = $Factura -> llamafuncionPG();
+	            
+	            if(is_null($resultado))
+	                throw new Exception( "error al insertar Factura");
+	            
+	                
+                if ( (int)$resultado[0] > 0 ){
+                    
+                    $_id_factura = $resultado[0];
+                    
+                    $respuesta['mensaje'] = "Factura Ingresada correctamente ";
+                    $respuesta['valor'] = 1;
+                    $respuesta['id_factura'] = $resultado[0];
+                    
+                }
+                echo json_encode($respuesta); die();
+	        }
 	        
-            echo json_encode($respuesta);
+	        echo "<message>Validacion de datos fallida<message>";
 	        
 	    } catch (Exception $e) {
 	        
@@ -1148,15 +1194,117 @@ class FacturarController extends ControladorBase{
 	    $respuesta['valor'] = $resultado[0]->numero_factura;
 	    
 	    echo json_encode($respuesta);
-	}
+	}	
 	
-	
-	
-	
+	public function tablaAmortizacion($_valor_capital = 1000, $numero_cuotas = 12, $interes_mensual = 0 , $fecha_corte = '2019-07-21')
+	{
+	    
+	    $monto = 8990.00;
+	    $tasa = 0.00; //en porcentaje %
+	    $plazo = 66;
+	    
+	    /*para operaciones*/
+	    $resultAmortizacion = array();
+	    $fila = array();
+	    $cuota = 0;
+	    $saldoIni = 0.0;
+	    $saldoFinal = 0.00;
+	    $amortizacion = $monto/$plazo;
+	    $saldoIni = $monto;
+	    $interes = 0.0;
+	    $pago = 0.00;
+	    $saldoFinal = $saldoIni;
+	    
+	    $totalINt = 0;
+	    $totalCAP = 0;
+	    
+	    for($i = 0; $i < $plazo; $i++){
+	        $fila = array();
+	        $cuota = $i+1;
+	        $interes = $saldoFinal*($tasa/100);
+	        $saldoFinal = $saldoIni-$amortizacion;
+	        $pago = $interes + $amortizacion;
+	        $totalINt +=  round($interes,2);
+	        $totalCAP += round($pago,2);
+	        $fila['cuota'] = $cuota;
+	        $fila['fecha'] = 'Mes-'.$cuota;
+	        $fila['saldo_inicial'] = round($saldoIni,2);
+	        $fila['interes'] = round($interes,2);
+	        $fila['amortizacion'] = round($amortizacion,2);
+	        $fila['pago'] = round($pago,2);
+	        $fila['saldo_final'] = round($saldoFinal,2);
+	        
+	        $saldoIni=$saldoFinal;
+	        
+	        array_push($resultAmortizacion, $fila);
+	    }
+	    
+	    
+	    $diferencia = round($totalCAP - $monto - $totalINt,2); 
+	    
+	    $resultAmortizacion[0]['amortizacion'] = ($resultAmortizacion[0]['amortizacion']) + $diferencia;
+	    
+	    
+	    $htmlTabla = '<table border="1">';
+	    
+	    $htmlTabla.='<tr>';
+	    $htmlTabla.='<td>Mes</td>';
+	    $htmlTabla.='<td>Fecha</td>';
+	    $htmlTabla.='<td>Saldo Inicial</td>';
+	    $htmlTabla.='<td>Interes|</td>';
+	    $htmlTabla.='<td>Amortizacion</td>';
+	    $htmlTabla.='<td>Pago</td>';
+	    $htmlTabla.='<td>Saldo Actual</td>';
+	    $htmlTabla.='</tr>';
+	    
+	    foreach ($resultAmortizacion as $res)
+	    {
+	        $htmlTabla.='<tr>';
+	        $htmlTabla.='<td>'.$res['cuota'].'</td>';
+	        $htmlTabla.='<td>'.$res['fecha'].'</td>';
+	        $htmlTabla.='<td>'.$res['saldo_inicial'].'</td>';
+	        $htmlTabla.='<td>'.$res['interes'].'</td>';
+	        $htmlTabla.='<td>'.$res['amortizacion'].'</td>';
+	        $htmlTabla.='<td>'.$res['pago'].'</td>';
+	        $htmlTabla.='<td>'.$res['saldo_final'].'</td>';
+	        $htmlTabla.='</tr>';
+	        
+	      
+	        
+	    }
+	    $htmlTabla .= '</table>';
+	    echo $htmlTabla; echo '<br>'. $totalINt .'<br>'.$totalCAP ; die();
+	    
+	   
+	    $num=$totalCAP-$totalINt;
+	    if($i==1)
+	    {
+	     $pago=$pago+$num;   
+	    }
+	    for($i = 0; $i < $plazo; $i++){
+	        
+	        $cuota = $i+1;
+	        $interes = $saldoFinal*($tasa/100);
+	        $saldoFinal = $saldoIni-$amortizacion;
+	        $pago = $interes + $amortizacion;
+	        $totalINt +=  round($interes,2);
+	        $totalCAP += round($pago,2);
+	        
+	        $htmlTabla.='<tr>';
+	        $htmlTabla.='<td>'.$cuota.'</td>';
+	        $htmlTabla.='<td>Mes-'.$cuota.'</td>';
+	        $htmlTabla.='<td>'.round($saldoIni,2).'</td>';
+	        $htmlTabla.='<td>'.round($interes,2).'</td>';
+	        $htmlTabla.='<td>'.round($amortizacion,2).'</td>';
+	        $htmlTabla.='<td>'.round($pago,2).'</td>';
+	        $htmlTabla.='<td>'.round($saldoFinal,2).'</td>';
+	        $htmlTabla.='</tr>';
+	        
+	        $saldoIni=$saldoFinal;
+	    }
+	    
 
-	
-	
-	
+	}
 	
 	
 	
