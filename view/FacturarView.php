@@ -151,26 +151,7 @@
                                 </div>
                     		    </div>
                     		    
-                    		    <div class="col-lg-2 col-xs-12 col-md-2">
-                        		    <div class="form-group">
-                                      <label for="plazo_pago" class="control-label">Plazo Meses:</label>
-                                      <select name="plazo_pago" id="plazo_pago"  class="form-control" disabled >                                      
-    									<option value="1" >1</option>
-    									<option value="2" >2</option>
-    									<option value="3" >3</option>
-    									<option value="4" >4</option>
-    									<option value="5" >5</option>
-    									<option value="6" >6</option>
-    									<option value="7" >7</option>
-    									<option value="8" >8</option> 
-    									<option value="9" >9</option>
-    									<option value="10" >10</option>
-    									<option value="11" >11</option>
-    									<option value="12" >12</option>          						        
-        							  </select> 
-                                      <div id="mensaje_plazo_pago" class="errores"></div>
-                                    </div>
-                    		    </div>
+                    		  
                     		    
     		     
                     			            
@@ -425,20 +406,36 @@
 		    $(document).ready(function(){
 		    $("#Cancelar").click(function() 
 			{
-		    	$('#razon_social_clientes').val("");
-				$('#id_tipo_identificacion').val("0");
-				$('#identificacion_clientes').val("");
-				$('#id_provincias').val("0");
-				$('#id_cantones').val("0");
-				$('#id_parroquias').val("0");
-				$('#direccion_clientes').val("");
-				$('#telefono_clientes').val("");
-				$('#celular_clientes').val("");
-				$('#correo_clientes').val("");
-		        $("#id_clientes").val("0");
-		        $("#id_estado").val("0");
 
-		        
+
+		    	swal("¿Esta seguro de Cancelar?", {
+		    		 title:"Petición",
+		    		 icon:"info", 
+		    		 dangerMode: true,
+		    		 text:"Se cancelará todo los datos ingresados",
+		    		  buttons: {
+		    		    cancelar: "Cancelar",
+		    		    aceptar: "Aceptar",
+		    		  },
+		    		})
+		    		.then((value) => {
+		    		  switch (value) {
+		    		 
+		    		    case "cancelar":
+		    		      return;
+		    		    case "aceptar":		      
+		    		    	
+		    		    
+		    	    		swal({title:"Factura Cancelada",text:"",icon:"info", dangerMode:true})
+		    	    		.then((value) => {
+		    	    				  	    			
+		    	    			window.location.href= 'index.php?controller=Facturar&action=cancelar_compra_factura';
+		    	    	    			    	    		  
+		    	    
+		    		  });
+		    		}
+		    		  
+		    		});		        
 		     
 		    }); 
 		    }); 
@@ -555,19 +552,11 @@
 		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
-		    	var id_tipo_identificacion  = $("#id_tipo_identificacion").val();
 		    	var identificacion_clientes = $("#identificacion_clientes").val();
 		    	var razon_social_clientes   = $("#razon_social_clientes").val();
-		    	var telefono_clientes   = $("#telefono_clientes").val();
 		    	var celular_clientes    = $("#celular_clientes").val();
 		    	var correo_clientes     = $("#correo_clientes").val();
-		    	var id_provincias       = $("#id_provincias").val();
-		    	var id_cantones         = $("#id_cantones").val();
-		    	var id_parroquias       = $("#id_parroquias").val();
-		    	var direccion_clientes  = $("#direccion_clientes").val();
-                var id_estado           = $("#id_estado").val();
-                var plazo_pago			= $("#plazo_pago");
-              
+		      
 		    	var contador=0;
 		    	var tiempo = tiempo || 1000;
 
@@ -660,22 +649,6 @@
 		        digitoVerificador = residuo==0 ? 0: modulo - residuo; 
 
 
-
-		    	if (id_tipo_identificacion == 0)
-		    	{
-			    	
-		    		$("#mensaje_id_tipo_identificacion").text("Seleccione Tipo");
-		    		$("#mensaje_id_tipo_identificacion").fadeIn("slow"); //Muestra mensaje de error
-
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_identificacion).offset().top }, tiempo);
-			        return false;
-			    }else{
-   	
-			    	 	$("#mensaje_id_tipo_identificacion").fadeOut("slow"); //Muestra mensaje de error
-				
-				}
-
-
 		    	
 		    	if (identificacion_clientes == "")
 		    	{
@@ -690,32 +663,18 @@
 		    	{
 
 
-					if(id_tipo_identificacion==1){
-
-
-						 if (ok==0){
-							 $("#mensaje_identificacion_clientes").text("Ingrese solo números");
-					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-					            return false;
-					      }else{
-
-								$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
 						
-						  }
-						
-						
-						if(identificacion_clientes.length==10){
+						if(identificacion_clientes.length<10){
 
-							$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-						}else{
-							
-							$("#mensaje_identificacion_clientes").text("Ingrese 10 Digitos");
+							$("#mensaje_identificacion_clientes").text("Ingrese al menos 10 Dígitos");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
 				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
 				            return false;
+							
+						}else{
+							$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+							
 						}
 
 
@@ -751,196 +710,147 @@
 
 
 
-						if(nat == true){         
-					         if (digitoVerificador != d10){    
 
-					        	 $("#mensaje_identificacion_clientes").text("El número de cédula de la persona natural es incorrecto.");
-						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-						            return false;
-						       
-					         }else{
 
-						        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-						     }  
+
+
+			    		if (pub==true){      
+
+
+					         /* El ruc de las empresas del sector publico terminan con 0001*/         
+				         if ( identificacion_clientes.substr(9,4) != '0001' ){                    
+
+				        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público debe terminar con 0001");
+					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
+					           
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
+					            return false;
 
 					     }else{
-
 					    	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-							   
-						 }
+						}
+						       
+					         if (digitoVerificador != d9){                          
+									$("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público es incorrecto.");
+						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
+						           
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
+						            return false;
+						           
+					         } else{
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+									
+						     }                 
 
+					 }else{
 
+			        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+			     }
 
+				               
 
+				       if(pri == true){    
+				    	   if ( identificacion_clientes.substr(10,3) != '001' ){   
 
-						
-					}else{
-
-						
-
-
-						 if (ok==0){
-							 $("#mensaje_identificacion_clientes").text("Ingrese solo números");
+				    		   $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado debe terminar con 001");
 					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 					            return false;
-					      }else{
+					                             
+					            
+					         }else{
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+									
+						         }
+					              
+					         if (digitoVerificador != d10){                          
 
-								$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-						
-						  }
-
-						
-
-						if(identificacion_clientes.length >=13){
-
-							$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-						}else{
-							
-							$("#mensaje_identificacion_clientes").text("Ingrese 13 Digitos");
-				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-				            return false;
-						}
-
-
-
-						if (provincia < 1 || provincia > numeroProvincias){           
-							$("#mensaje_identificacion_clientes").text("El código de la provincia (dos primeros dígitos) es inválido");
-				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-				            return false;
-
-					      }else{
-
-					    		$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-								
-						  }
-
-
-
-						if (d3==7 || d3==8){           
-
-							$("#mensaje_identificacion_clientes").text("El tercer dígito ingresado es inválido");
-				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-				            return false;
-					      }
-						else{
-
-							$("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-							
-							}
-
-
-						  if (pub==true){      
-
-
-						         /* El ruc de las empresas del sector publico terminan con 0001*/         
-					         if ( identificacion_clientes.substr(9,4) != '0001' ){                    
-
-					        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público debe terminar con 0001");
+					        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado es incorrecto");
 						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 						            return false;
 
-						     }else{
-						    	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-							}
-							       
-						         if (digitoVerificador != d9){                          
-										$("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector público es incorrecto.");
-							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-							            return false;
-							           
-						         } else{
-						        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-										
-							     }                 
+						     } else{
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+									
+					         }        
+					         
+					      } else{
 
-						 }else{
-				        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-								
-					     }  
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+					     }
 
-					               
 
-					       if(pri == true){    
-					    	   if ( identificacion_clientes.substr(10,3) != '001' ){   
 
-					    		   $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado debe terminar con 001");
-						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-						            return false;
-						                             
-						            
-						         }else{
-						        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-										
-							         }
-						              
-						         if (digitoVerificador != d10){                          
 
-						        	 $("#mensaje_identificacion_clientes").text("El ruc de la empresa del sector privado es incorrecto");
-							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-							            return false;
 
-							     } else{
-						        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-										
-						         }        
-						         
-						      } else{
-						        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-										
-							     }  
 
+
+				       
+
+
+						
 
 						if(nat == true){         
 
 							if (identificacion_clientes.length >10 && identificacion_clientes.substr(10,3) != '001' ){                    
-					         
+						         
 					            $("#mensaje_identificacion_clientes").text("El ruc de la persona natural debe terminar con 001.");
 					    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 					            return false;
 					            
 					         }else{
+
 					        	 if(identificacion_clientes.length >13){
 					        		 $("#mensaje_identificacion_clientes").text("El ruc de la persona natural es incorrecto.");
 							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 							           
-							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 							            return false;
 
 						        	 }else{
 						         
 					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
-						        	 }	
+						        	 }
 
 						         }
+
 
 							
 					         if (digitoVerificador != d10){    
 
-					        	 $("#mensaje_identificacion_clientes").text("El ruc de la persona natural es incorrecto.");
-						    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
-						           
-						            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
-						            return false;
+					        	 if(identificacion_clientes.length >10){
+					        		 $("#mensaje_identificacion_clientes").text("El ruc de la persona natural es incorrecto.");
+							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
+							           
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
+							            return false;
+
+						        	 }else{
+						         
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+						        	 }
+
+
+
+
+					        	 if(identificacion_clientes.length <11){
+					        		 $("#mensaje_identificacion_clientes").text("El número de cedula de la persona natural es incorrecto.");
+							    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
+							           
+							            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
+							            return false;
+
+						        	 }else{
+						         
+					        	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
+						        	 }
+
+						        	 
 						       
 					         }else{
 
@@ -948,6 +858,8 @@
 						     }  
 
 
+
+					         
 					     }else{
 
 					    	 $("#mensaje_identificacion_clientes").fadeOut("slow"); //Muestra mensaje de error
@@ -956,9 +868,6 @@
 
 
 						}
-
-
-				}    
 
 
 		    	
@@ -1054,87 +963,6 @@
 			    }
 
 
-		    	if (id_provincias == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_provincias").text("Seleccione");
-		    		$("#mensaje_id_provincias").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_provincias).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_provincias").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-
-
-
-		    	if (id_cantones == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_cantones").text("Seleccione");
-		    		$("#mensaje_id_cantones").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_cantones).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_cantones").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-
-
-		    	if (id_parroquias == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_parroquias").text("Seleccione");
-		    		$("#mensaje_id_parroquias").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_parroquias).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_parroquias").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-		    	if (direccion_clientes == "" )
-		    	{
-			    	
-		    		$("#mensaje_direccion_clientes").text("Ingrese Barrio");
-		    		$("#mensaje_direccion_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_direccion_clientes).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_direccion_clientes").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-		    	
-		    	if (id_estado == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_estado").text("Seleccione");
-		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_estado).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
 		    	
 				var parametros = $("#frm_factura").serialize();					
 
@@ -1179,15 +1007,24 @@
 						
 						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
 							}).then(function(){
-								//OpenWindowWithPost(url, windowoption, target, params);
 								window.open(url,target);
 								window.location.reload();
 								});
 						
 						
-						}
-					console.log(x)
-				}).fail(function(xhr, status, error){
+						}else{
+
+							swal( {
+								 text:x.mensaje,
+								 title:"FACTURA",
+								 dangerMode: true,
+								 icon: "error"
+								}
+							)
+
+					}
+
+					}).fail(function(xhr, status, error){
 					var err = xhr.responseText
 					console.log(err)
 				})
@@ -1197,9 +1034,6 @@
 			}); 
 
 		    
-		        $( "#id_tipo_identificacion" ).focus(function() {
-				  $("#mensaje_id_tipo_identificacion").fadeOut("slow");
-			    });
 		        $( "#identificacion_clientes" ).focus(function() {
 					  $("#mensaje_identificacion_clientes").fadeOut("slow");
 				 });
@@ -1214,26 +1048,6 @@
 		        $( "#correo_clientes" ).focus(function() {
 					  $("#mensaje_correo_clientes").fadeOut("slow");
 				 });  
-
-		        $( "#id_provincias" ).focus(function() {
-					  $("#mensaje_id_provincias").fadeOut("slow");
-				 });
-
-		        $( "#id_cantones" ).focus(function() {
-					  $("#mensaje_id_cantones").fadeOut("slow");
-				 });
-
-		        $( "#id_parroquias" ).focus(function() {
-					  $("#mensaje_id_parroquias").fadeOut("slow");
-				 });
-
-		        $( "#direccion_clientes" ).focus(function() {
-					  $("#mensaje_direccion_clientes").fadeOut("slow");
-				 });
-
-		        $( "#id_estado" ).focus(function() {
-					  $("#mensaje_id_estado").fadeOut("slow");
-				 });
 
 		        
 				
@@ -1266,42 +1080,7 @@
 					})
 			    }
 
-		    function OpenWindowWithPost(url, windowoption, target, params)
-		    {
-		             var form = document.createElement("form");
-		             form.setAttribute("method", "post");
-		             form.setAttribute("action", url);
-		             form.setAttribute("target", target);
-		  
-		             for (var i in params) {
-		                 if (params.hasOwnProperty(i)) {
-		                     var input = document.createElement('input');
-		                     input.type = 'hidden';
-		                     input.name = i;
-		                     input.value = params[i];
-		                     form.appendChild(input);
-		                 }
-		             }
-		             
-		             document.body.appendChild(form);
-		             
-		             //note I am using a post.htm page since I did not want to make double request to the page 
-		            //it might have some Page_Load call which might screw things up.
-		             //window.open("post.htm", name, windowoption);
-		             
-		             form.submit();
-		             
-		             document.body.removeChild(form);
-		     }
-
-	$("#id_tipo_pago").on("change",function(){
-		$valor = $(this).find("option:selected").text().toUpperCase();
-		if($valor.trim() == "CREDITO"){
-			$("#plazo_pago").attr("disabled",false);
-		}else{ $("#plazo_pago").attr("disabled",true);}
-	});
-
-	</script>
+		  	</script>
      
    	
   </body>

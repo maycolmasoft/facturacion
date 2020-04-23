@@ -90,27 +90,93 @@ class ProductosController extends ControladorBase{
 			  
 			    if($_id_productos > 0){
 					
-					$columnas =    "nombre_productos = '$_nombre_productos',
+			       
+			        
+			        if ($_FILES['imagen_productos']['tmp_name']!="")
+			        {
+			            
+			            
+			            $directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografias_productos/';
+			            
+			            $nombre = $_FILES['imagen_productos']['name'];
+			            $tipo = $_FILES['imagen_productos']['type'];
+			            $tamano = $_FILES['imagen_productos']['size'];
+			            
+			            move_uploaded_file($_FILES['imagen_productos']['tmp_name'],$directorio.$nombre);
+			            $data = file_get_contents($directorio.$nombre);
+			            $imagen_productos = pg_escape_bytea($data);
+			            
+			            
+			            
+			            $columnas =    "nombre_productos = '$_nombre_productos',
+                                    codigo_productos = '$_codigo_productos',
+                                    id_estado        = '$_id_estado',
+                                    precio_productos = '$_precio_productos',
+                                    imagen_productos = '$imagen_productos'";
+			            
+			            $tabla = "productos";
+			            
+			            $where = "id_productos = '$_id_productos'";
+			            
+			            $resultado=$productos->UpdateBy($columnas, $tabla, $where);
+			        }else{
+			            
+			           
+			            $columnas =    "nombre_productos = '$_nombre_productos',
                                     codigo_productos = '$_codigo_productos',
                                     id_estado        = '$_id_estado',
                                     precio_productos = '$_precio_productos'";
+			            
+			            $tabla = "productos";
+			            
+			            $where = "id_productos = '$_id_productos'";
+			            
+			            $resultado=$productos->UpdateBy($columnas, $tabla, $where);
+			        }
+			        
 					
-					        $tabla = "productos";
-					        
-					$where = "id_productos = '$_id_productos'";
-					
-					$resultado=$productos->UpdateBy($columnas, $tabla, $where);
 					
 				}else{
 				    
-					$funcion = "ins_productos";
-					$parametros = " '$_nombre_productos',
+				    
+				    if ($_FILES['imagen_productos']['tmp_name']!="")
+				    {
+				        
+				        $directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografias_productos/';
+				        
+				        $nombre = $_FILES['imagen_productos']['name'];
+				        $tipo = $_FILES['imagen_productos']['type'];
+				        $tamano = $_FILES['imagen_productos']['size'];
+				        
+				        move_uploaded_file($_FILES['imagen_productos']['tmp_name'],$directorio.$nombre);
+				        $data = file_get_contents($directorio.$nombre);
+				        $imagen_productos = pg_escape_bytea($data);
+				        
+				        
+				        $funcion = "ins_productos";
+				        $parametros = " '$_nombre_productos',
                                     '$_codigo_productos',
                                     '$_precio_productos',
-                                    '$_id_estado'";
-					$productos->setFuncion($funcion);
-					$productos->setParametros($parametros);
-					$resultado=$productos->Insert();
+                                    '$_id_estado',
+                                    '$imagen_productos'";
+				        $productos->setFuncion($funcion);
+				        $productos->setParametros($parametros);
+				        $resultado=$productos->Insert();
+				        
+				    }else{
+				        $imagen_productos="";
+				        $funcion = "ins_productos";
+				        $parametros = " '$_nombre_productos',
+                                    '$_codigo_productos',
+                                    '$_precio_productos',
+                                    '$_id_estado',
+                                    '$imagen_productos'";
+				        $productos->setFuncion($funcion);
+				        $productos->setParametros($parametros);
+				        $resultado=$productos->Insert();
+				    }
+				    
+					
 				}
 				
 		
@@ -149,7 +215,7 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado";
+                                      productos.modificado, imagen_productos";
 	    $tablas   =  "public.productos";
 	    $where    =  "productos.id_estado = 1";
 	    $id       = "productos.id_productos";
@@ -209,6 +275,7 @@ class ProductosController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
@@ -232,6 +299,7 @@ class ProductosController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_productos.'&id_nombre=id_productos&tabla=productos&campo=imagen_productos" width="80" height="60"></td>';
 	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
@@ -349,7 +417,7 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado";
+                                      productos.modificado, imagen_productos";
 		$tablas   =  "public.productos";
 		$where    =  "productos.id_estado = 2";
 		$id       = "productos.id_productos";
@@ -412,6 +480,7 @@ class ProductosController extends ControladorBase{
 				$html.= "<thead>";
 				$html.= "<tr>";
 				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
@@ -434,6 +503,7 @@ class ProductosController extends ControladorBase{
 					$i++;
 					$html.='<tr>';
 					$html.='<td style="font-size: 11px;">'.$i.'</td>';
+					$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_productos.'&id_nombre=id_productos&tabla=productos&campo=imagen_productos" width="80" height="60"></td>';
 					$html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';

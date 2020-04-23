@@ -72,7 +72,7 @@
                   
                   <div class="box-body">
 
-						<form action="<?php echo $helper->url("Productos","InsertaProductos"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+						<form action="<?php echo $helper->url("Productos","InsertaProductos"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
                               <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
             
              					<div class="row">
@@ -122,6 +122,16 @@
                                                           <div id="mensaje_id_estado" class="errores"></div>
                                     </div>
                                     </div>
+                                    
+                                    
+                                    <div class="col-lg-3 col-xs-12 col-md-3">
+                        		    <div class="form-group">
+                                                          <label for="imagen_productos" class="control-label">Imagen:</label>
+                                                          <input type="file" class="form-control" id="imagen_productos" name="imagen_productos" value="" accept="image/*">
+                                                          <div id="mensaje_imagen_productos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		
                         		</div>	
                         		
             					<div class="row">
@@ -187,6 +197,16 @@
 	                                                          <div id="mensaje_id_estado" class="errores"></div>
 	                                    </div>
 	                                    </div>
+	                            		  
+	                            		  
+	                                   <div class="col-lg-3 col-xs-12 col-md-3">
+                        		       <div class="form-group">
+                                                          <label for="imagen_productos" class="control-label">Imagen:</label>
+                                                          <input type="file" class="form-control"  id="imagen_productos" name="imagen_productos" value="">
+                                                          <div id="mensaje_imagen_productos" class="errores"></div>
+                                       </div>
+                        		       </div>
+	                            		  
 	                            		  
                             		</div>	
                         					    
@@ -385,6 +405,9 @@
 				$('#codigo_productos').val("");
 				$('#precio_productos').val("0.00");
 				$('#id_estado').val("0");
+				$('#imagen_productos').val("");
+
+
 				
 		    }); 
 		    }); 
@@ -470,7 +493,7 @@
 		        			}).fail(function(respuesta) {
 
 		        				//$('#nombre_productos').val("");
-		    					$('#codigo_productos').val("");
+		    					//$('#codigo_productos').val("");
 		    					$('#precio_productos').val("0.00");
 		    					$('#id_estado').val("0");
 		    				
@@ -502,7 +525,7 @@
 		    	var nombre_productos = $("#nombre_productos").val();
 		    	var precio_productos = $("#precio_productos").val();
 		    	var id_estado 		 = $("#id_estado").val();
-
+		    	
 		    	var contador=0;
 		    	var tiempo = tiempo || 1000;
 		    	
