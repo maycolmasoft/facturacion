@@ -51,4 +51,64 @@
 
     </script>
     
+    
+    <script type="text/javascript">
+
+    var interval, mouseMove;
+
+    $(document).mousemove(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&action=cerrar_sesion";
+        }, 300);
+      });
+
+    $(document).scroll(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&action=cerrar_sesion";
+        }, 300);
+      });
+
+      $(document).keydown(function(){
+          //Establezco la última fecha cuando moví el cursor
+          mouseMove = new Date();
+          /* Llamo a esta función para que ejecute una acción pasado x tiempo
+           después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+          inactividad(function(){
+          	window.location.href = "index.php?controller=Usuarios&action=cerrar_sesion";
+          }, 300);
+        });
+
+     
+
+      /* Función creada para ejecutar una acción (callback), al pasar x segundos 
+         (seconds) de haber dejado de mover el cursor */
+      var inactividad = function(callback, seconds){
+        //Elimino el intervalo para que no se ejecuten varias instancias
+        clearInterval(interval);
+        //Creo el intervalo
+        interval = setInterval(function(){
+           //Hora actual
+           var now = new Date();
+           //Diferencia entre la hora actual y la última vez que se movió el cursor
+           var diff = (now.getTime()-mouseMove.getTime())/1000;
+           //Si la diferencia es mayor o igual al tiempo que pasastes por parámetro
+           if(diff >= seconds){
+            //Borro el intervalo
+            clearInterval(interval);
+            //Ejecuto la función que será llamada al pasar el tiempo de inactividad
+            callback();          
+           }
+        }, 50);
+      }
+
+   </script>
+    
    

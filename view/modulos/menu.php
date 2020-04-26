@@ -56,7 +56,6 @@ $controladores=$_SESSION['controladores'];
         </li>
         
        
-       
        <li class="treeview"  style="<?php echo getcontrolador("MenuProcesos",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder"></i> <span>Procesos</span>
@@ -70,7 +69,33 @@ $controladores=$_SESSION['controladores'];
         </li>
         
        
-       
+        <li class="treeview"  style="<?php echo getcontrolador("MenuPedidos",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Procesos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            
+            <li class="treeview">
+          <a href="#">
+            <i class="fa fa-cart-arrow-down"></i> <span>Realizar Pedidos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li style="<?php echo getcontrolador("Facturar",$controladores) ?>"><a href="index.php?controller=Facturar&action=index2"><i class="fa fa-tasks"></i> Viveres</a></li>
+            <li style="<?php echo getcontrolador("Facturar",$controladores) ?>"><a href="index.php?controller=Facturar&action=index3"><i class="fa fa-tasks"></i> Tilapia - Camarón</a></li>
+            <li style="<?php echo getcontrolador("Facturar",$controladores) ?>"><a href="index.php?controller=Facturar&action=index4"><i class="fa fa-tasks"></i> Panadería</a></li>
+            
+          </ul>
+        </li>
+            
+            <li style="<?php echo getcontrolador("ConsultaFactura",$controladores) ?>"><a href="index.php?controller=ConsultaFactura&action=index2"><i class="fa fa-file-pdf-o"></i> Consultar tus Pedidos</a></li>
+          </ul>
+        </li>
        
         <li class="treeview"  style="<?php echo getcontrolador("MenuReportes",$controladores) ?>">
           <a href="#">

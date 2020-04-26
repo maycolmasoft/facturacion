@@ -37,7 +37,47 @@ class ConsultaFacturaController extends ControladorBase{
     
     
     
+    
+    
+    public function index2(){
+        
+        $consulta= new ConsultaFacturaModel();
+        $mensaje="";
+        $error="";
+        session_start();
+        
+        if(empty( $_SESSION)){
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            return;
+        }
+        
+        $nombre_controladores = "ConsultaFactura";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $consulta->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+        
+        if (empty($resultPer)){
+            
+            $this->view("Error",array(
+                "resultado"=>"No tiene Permisos de Acceso de consulta Factura"
+                
+            ));
+            exit();
+        }
+        
+        
+        
+        $this->view("ConsultaFacturaClientes",array(
+            "mensaje"=>$mensaje,
+            "error"=> $error
+            
+        ));
+    }
+    
+    
     public function Consulta_Factura(){
+        
+        
         
         
         session_start();
@@ -49,23 +89,23 @@ class ConsultaFacturaController extends ControladorBase{
         
         $where_to="";
         $columnas = "
-                      factura_cabeza.id_factura_cabeza, 
-                      clientes.id_clientes, 
-                      clientes.razon_social_clientes, 
-                      clientes.identificacion_clientes, 
-                      factura_cabeza.numero_factura_cabeza, 
-                      factura_cabeza.fecha_factura_cabeza, 
-                      factura_cabeza.subtotal_factura_cabeza, 
-                      factura_cabeza.total_factura_cabeza, 
-                      usuarios.cedula_usuarios, 
-                      usuarios.nombre_usuarios, 
-                      estado_factura.id_estado_factura, 
+                      factura_cabeza.id_factura_cabeza,
+                      clientes.id_clientes,
+                      clientes.razon_social_clientes,
+                      clientes.identificacion_clientes,
+                      factura_cabeza.numero_factura_cabeza,
+                      factura_cabeza.fecha_factura_cabeza,
+                      factura_cabeza.subtotal_factura_cabeza,
+                      factura_cabeza.total_factura_cabeza,
+                      usuarios.cedula_usuarios,
+                      usuarios.nombre_usuarios,
+                      estado_factura.id_estado_factura,
                       estado_factura.nombre_estado_factura
                       ";
         $tablas   = "
-                      public.clientes, 
-                      public.factura_cabeza, 
-                      public.estado_factura, 
+                      public.clientes,
+                      public.factura_cabeza,
+                      public.estado_factura,
                       public.usuarios
             
                     ";
@@ -99,7 +139,7 @@ class ConsultaFacturaController extends ControladorBase{
                 }
                 
                 $where1=" AND (razon_social_clientes LIKE '%".$search."%' OR identificacion_clientes LIKE '%".$search."%' OR numero_factura_cabeza LIKE '%".$search."%' OR nombre_usuarios LIKE '%".$search."%' OR nombre_estado_factura LIKE '%".$search."%')";
-          
+                
                 $where_to=$where.$where1.$where2;
             }else{
                 if($desde!="" && $hasta!=""){
@@ -114,7 +154,7 @@ class ConsultaFacturaController extends ControladorBase{
             
             
             
-               
+            
             $html="";
             $resultSet=$consulta->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
@@ -204,6 +244,183 @@ class ConsultaFacturaController extends ControladorBase{
                 $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
                 $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
                 $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Clientes registrados...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            die();
+            
+        }
+        
+        
+        
+    }
+    
+    
+    public function Consulta_Factura_Clientes(){
+        
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $cedula_usuarios=$_SESSION["cedula_usuarios"];
+        
+        $usuarios= new UsuariosModel();
+        $consulta= new ConsultaFacturaModel();
+        $clientes= new ClientesModel();
+        $estadofactura= new EstadoFacturaModel();
+        
+        $where_to="";
+        $columnas = "
+                      factura_cabeza.id_factura_cabeza, 
+                      clientes.id_clientes, 
+                      clientes.razon_social_clientes, 
+                      clientes.identificacion_clientes, 
+                      factura_cabeza.numero_factura_cabeza, 
+                      factura_cabeza.fecha_factura_cabeza, 
+                      factura_cabeza.subtotal_factura_cabeza, 
+                      factura_cabeza.total_factura_cabeza, 
+                      usuarios.cedula_usuarios, 
+                      usuarios.nombre_usuarios, 
+                      estado_factura.id_estado_factura, 
+                      estado_factura.nombre_estado_factura
+                      ";
+        $tablas   = "
+                      public.clientes, 
+                      public.factura_cabeza, 
+                      public.estado_factura, 
+                      public.usuarios
+            
+                    ";
+        $where    = " factura_cabeza.id_clientes = clientes.id_clientes AND
+                      factura_cabeza.id_estado_factura = estado_factura.id_estado_factura AND
+                      usuarios.id_usuarios = factura_cabeza.id_usuarios AND usuarios.cedula_usuarios='$cedula_usuarios'";
+        
+        $id       = "factura_cabeza.id_factura_cabeza";
+        
+        
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        $desde=  (isset($_REQUEST['desde'])&& $_REQUEST['desde'] !=NULL)?$_REQUEST['desde']:'';
+        $hasta=  (isset($_REQUEST['hasta'])&& $_REQUEST['hasta'] !=NULL)?$_REQUEST['hasta']:'';
+        
+        $where2="";
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                if($desde!="" && $hasta!=""){
+                    
+                    $where2=" AND DATE(e.creado)  BETWEEN '$desde' AND '$hasta'";
+                    
+                }
+                
+                $where1=" AND (razon_social_clientes LIKE '%".$search."%' OR identificacion_clientes LIKE '%".$search."%' OR numero_factura_cabeza LIKE '%".$search."%' OR nombre_usuarios LIKE '%".$search."%' OR nombre_estado_factura LIKE '%".$search."%')";
+          
+                $where_to=$where.$where1.$where2;
+            }else{
+                if($desde!="" && $hasta!=""){
+                    
+                    $where2=" AND DATE(factura_cabeza.creado)  BETWEEN '$desde' AND '$hasta'";
+                    
+                }
+                
+                $where_to=$where.$where2;
+                
+            }
+            
+            
+            
+               
+            $html="";
+            $resultSet=$consulta->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 15; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$consulta->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            
+            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+              //  $html.='<button type="button" id="Guardar" name="Guardar" class="btn btn-success pull-left" onclick="DescargaExcel()"><i class="glyphicon glyphicon-download-alt"></i></button>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:425px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_ConsultaFactura' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th style="text-align: left;  font-size: 13px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 13px;">Cédula</th>';
+                $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
+                $html.='<th style="text-align: left;  font-size: 13px;">Número de Pedido</th>';
+                $html.='<th style="text-align: left;  font-size: 13px;">Fecha Entrega</th>';
+                $html.='<th style="text-align: right;  font-size: 13px;">Valor</th>';
+                $html.='<th style="text-align: left; font-size: 13px;">Usuario</th>';
+                $html.='<th style="text-align: left; font-size: 13px;">Estado</th>';
+                
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                
+                foreach ($resultSet as $res)
+                {
+                    
+                    
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->identificacion_clientes.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->razon_social_clientes.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->numero_factura_cabeza.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->fecha_factura_cabeza.'</td>';
+                    $html.='<td style="font-size: 12px; text-align: right;">'.$res->total_factura_cabeza.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->nombre_usuarios.'</td>';
+                    $html.='<td style="font-size: 12px;">'.$res->nombre_estado_factura.'</td>';
+                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=ConsultaFactura&action=generar_reporte_factura&id_factura_cabeza='.$res->id_factura_cabeza.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_Consulta_Factura("index.php", $page, $total_pages, $adjacents).'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Pedidos registrados...</b>';
                 $html.='</div>';
                 $html.='</div>';
             }
@@ -390,6 +607,8 @@ class ConsultaFacturaController extends ControladorBase{
                       clientes.razon_social_clientes, 
                       clientes.identificacion_clientes,
                       clientes.direccion_clientes, 
+clientes.celular_clientes, 
+clientes.correo_clientes, 
                       estado_factura.id_estado_factura, 
                       estado_factura.nombre_estado_factura, 
                       tipo_pago.id_tipo_pago, 
@@ -421,6 +640,15 @@ class ConsultaFacturaController extends ControladorBase{
         
         $rsdatos = $factura_cabeza->getCondiciones($columnas, $tablas, $where, $id);
         
+        
+        include dirname(__FILE__).'\barcode.php';
+        $nombreimagen = "codigoBarras";
+        $code = $rsdatos[0]->numero_factura_cabeza;
+        $ubicacion =   dirname(__FILE__).'\..\view\images\barcode'.'\\'.$nombreimagen.'.png';
+        barcode($ubicacion, $code, 50, 'horizontal', 'code128', true);
+        
+        $datos_reporte['IMGBARCODE']=$ubicacion;
+        
         $datos_reporte['NOMBREEMPRESA']=$rsdatos[0]->nombre_empresa;
         $datos_reporte['DIRECCIONEMPRESA']=$rsdatos[0]->direccion_empresa;
         $datos_reporte['SUCURSALEMPRESA']=$rsdatos[0]->sucursal_empresa;
@@ -431,6 +659,9 @@ class ConsultaFacturaController extends ControladorBase{
         $datos_reporte['NOMBCLIENTE']=$rsdatos[0]->razon_social_clientes;
         $datos_reporte['CEDULACLIENTE']=$rsdatos[0]->identificacion_clientes;
         $datos_reporte['DIRCLIENTE']=$rsdatos[0]->direccion_clientes;
+        $datos_reporte['TELCLIENTE']=$rsdatos[0]->celular_clientes;
+        $datos_reporte['MAILCLIENTE']=$rsdatos[0]->correo_clientes;
+        
         $datos_reporte['FECHAEMISION']=$rsdatos[0]->fecha_factura_cabeza;
         $datos_reporte['TIPOPAGO']=$rsdatos[0]->nombre_tipo_pago;
         $datos_reporte['SUBTOTAL']=number_format((float)$rsdatos[0]->subtotal_factura_cabeza, 2, ',', '.');
@@ -480,16 +711,12 @@ class ConsultaFacturaController extends ControladorBase{
         
         
         $html='';
-        
-        $html.='<br>';
-        $html.='<br>';
-        $html.='<br>';
-        $html.='<table class="info" style="width:100%;" align="center" border=0>';
+        $html.='<table class="dtlTax">';
         $html.='<tr>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;"></th>';
+        $html.='<th style="text-align: center; font-size: 13px;">Cantidad</th>';
+        $html.='<th style="text-align: center; font-size: 13px;">Producto</th>';
+        $html.='<th style="text-align: center; font-size: 13px;">Precio Unitario</th>';
+        $html.='<th style="text-align: center; font-size: 13px;">Precio Total</th>';
         $html.='</tr>';
             
         
@@ -499,15 +726,57 @@ class ConsultaFacturaController extends ControladorBase{
         {
             
             $html.='<tr >';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cantidad_factura_detalle.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.number_format((float)$res->precio_productos, 2, ',', '.').'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.number_format((float)$res->total_factura_detalle, 2, ',', '.').'</td>';
+            $html.='<td class="centrado">'.$res->cantidad_factura_detalle.'</td>';
+            $html.='<td style="text-align: left; font-size: 12px;">'.$res->nombre_productos.'</td>';
+            $html.='<td class="valores">'.number_format((float)$res->precio_productos, 2, ',', '.').'</td>';
+            $html.='<td class="valores">'.number_format((float)$res->total_factura_detalle, 2, ',', '.').'</td>';
             
             
             $html.='</td>';
             $html.='</tr>';
         }
+        
+        
+        $html.='<tr>';
+        $html.='<td><b></b></td>';
+        $html.='<td><b></b></td>';
+        $html.='<td class="valores"><b>SubTotal: </b></td>';
+        $html.='<td class="valores">'.number_format((float)$rsdatos[0]->subtotal_factura_cabeza, 2, ',', '.').'</td>';
+        $html.='</tr>';
+        
+        $valorconiva = 0.00;
+        $valorconiva = $rsdatos[0]->valor_iva_factura_cabeza * $rsdatos[0]->subtotal_factura_cabeza;
+        
+        
+        $html.='<tr>';
+        $html.='<td><b></b></td>';
+        $html.='<td><b></b></td>';
+        $html.='<td class="valores"><b>Iva: </b></td>';
+        $html.='<td class="valores">'.number_format((float)$valorconiva, 2, ',', '.').'</td>';
+        $html.='</tr>';
+        
+        $valorcondescuento = 0.00;
+        $valorcondescuento = $rsdatos[0]->valor_descuento_factura_cabeza * $rsdatos[0]->subtotal_factura_cabeza;
+        
+        
+        $html.='<tr>';
+        $html.='<td><b></b></td>';
+        $html.='<td><b></b></td>';
+        $html.='<td class="valores"><b>Descuento: </b></td>';
+        $html.='<td class="valores">'.number_format((float)$valorcondescuento, 2, ',', '.').'</td>';
+        $html.='</tr>';
+        
+        $valortotalFactura = 0.00;
+        $valortotalFactura = $rsdatos[0]->subtotal_factura_cabeza+$valorconiva-$valorcondescuento;
+        
+        
+        
+        $html.='<tr>';
+        $html.='<td><b></b></td>';
+        $html.='<td><b></b></td>';
+        $html.='<td class="valores"><b>Total a Pagar: </b></td>';
+        $html.='<td class="valores">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
+        $html.='</tr>';
         
         $html.='</table>';
         

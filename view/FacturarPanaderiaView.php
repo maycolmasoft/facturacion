@@ -47,14 +47,14 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li class="active">Facturar</li>
+        <li class="active">Registrar Pedido</li>
       </ol>
    </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">DATOS PARA LA FACTURA</h3>
+          <h3 class="box-title">DATOS PARA EL PEDIDO</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -74,8 +74,8 @@
                                <div class="col-lg-2 col-xs-12 col-md-2">
                     		   <div class="form-group">
                                                   <label for="identificacion_clientes" class="control-label">Identificación:</label>
-                                                  <input type="hidden" class="form-control" id="id_clientes" name="id_clientes" value="0" >
-                                                  <input type="number" class="form-control" id="identificacion_clientes" name="identificacion_clientes" value=""  placeholder="identificación..">
+                                                  <input type="hidden" class="form-control" id="id_clientes" name="id_clientes" value="0" readonly>
+                                                  <input type="number" class="form-control" id="identificacion_clientes" name="identificacion_clientes" value="<?php echo $_SESSION["cedula_usuarios"];?>"  placeholder="identificación.." readonly>
                                                   <div id="mensaje_identificacion_clientes" class="errores"></div>
                                 </div>
                                 </div>
@@ -83,7 +83,7 @@
                                <div class="col-lg-3 col-xs-12 col-md-3">
                     		   <div class="form-group">
                                                   <label for="razon_social_clientes" class="control-label">Razón Social:</label>
-                                                  <input type="text" class="form-control" id="razon_social_clientes" name="razon_social_clientes" value=""  placeholder="razón social..">
+                                                  <input type="text" class="form-control" id="razon_social_clientes" name="razon_social_clientes" value=""  placeholder="razón social.." readonly>
                                                   <div id="mensaje_razon_social_clientes" class="errores"></div>
                                 </div>
                                 </div>
@@ -108,7 +108,7 @@
                     		    
                     		    <div class="col-lg-2 col-xs-12 col-md-2">
                         		    <div class="form-group">
-                                          <label for="id_tipo_pago" class="control-label">Numero Factura:</label>
+                                          <label for="id_tipo_pago" class="control-label">Número Pedido:</label>
                                           <input type="text" id="numero_factura" name="numero_factura" class="form-control" value="" readonly>
                                           <div id="mensaje_id_tipo_pago" class="errores"></div>
                                     </div>
@@ -122,7 +122,7 @@
                                 
                                  <div class="col-lg-2 col-xs-12 col-md-2">
                     		    <div class="form-group">
-                                                      <label for="fecha_factura_cabeza" class="control-label">Fecha:</label>
+                                                      <label for="fecha_factura_cabeza" class="control-label">Fecha para la Entrega:</label>
                                                       <input type="date" class="form-control" id="fecha_factura_cabeza" name="fecha_factura_cabeza" value="<?php echo date('Y-m-d');?>">
                                                       <div id="mensaje_fecha_factura_cabeza" class="errores"></div>
                                 </div>
@@ -130,7 +130,7 @@
                                   
                                 <div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
-                                                          <label for="id_usuarios" class="control-label">Vendedor:</label>
+                                                          <label for="id_usuarios" class="control-label">Solicitante:</label>
                                                           <select name="id_usuarios" id="id_usuarios"  class="form-control" >
                                                           <option value="<?php echo $_SESSION["id_usuarios"]; ?>" ><?php echo $_SESSION["nombre_usuarios"]; ?> </option>
                         							      </select> 
@@ -166,7 +166,7 @@
                           			</button>
                           			
                           			<button  type = "button"  id="Guardar" name="Guardar" class = "btn btn-default" >
-                            			<span  class = "glyphicon glyphicon-floppy-saved" > </span> Guardar Factura
+                            			<span  class = "glyphicon glyphicon-floppy-saved" > </span> Guardar Pedido
                           			</button>
                           			
                           			<button  type = "button"  id="Cancelar" name="Cancelar" class = "btn btn-default" >
@@ -194,7 +194,7 @@
          <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">DETALLE DE LA FACTURA</h3>
+              <h3 class="box-title">DETALLE DEL PEDIDO</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -207,6 +207,9 @@
 			<div id="detalle_registrados"></div>
         	</div>
           	</div>
+          	
+          	   <div class="alert alert-warning" role="alert">Recuerde que estos productos se entregan todos los dias de LUNES a DOMINGO de 8am a 7pm.</div>
+			
 	    </section>
     	       
      </div>
@@ -215,7 +218,7 @@
     
     
     <div class="modal fade" id="mod_agregar_productos">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -282,7 +285,7 @@
         		            },
         		            url: 'index.php?controller=Facturar&action=consulta_productos&search='+search,
         		            type: 'POST',
-        		            data: {action:'ajax', page:pagina, id_tipo_productos:0},
+        		            data: {action:'ajax', page:pagina, id_tipo_productos:2},
         		            success: function(x){
         		              $("#productos_registrados").html(x);
         		              $("#load_productos_registrados").html("");
@@ -364,6 +367,7 @@
       					},
         	       	dataType:'json'
         	       	}).done(function(data){
+        	       		
 
 
            	       		loadDetalleFactura();
@@ -460,7 +464,7 @@
 		    		    case "aceptar":		      
 		    		    	
 		    		    
-		    	    		swal({title:"Factura Cancelada",text:"",icon:"info", dangerMode:true})
+		    	    		swal({title:"Pedido Cancelado",text:"",icon:"info", dangerMode:true})
 		    	    		.then((value) => {
 		    	    				  	    			
 		    	    			window.location.href= 'index.php?controller=Facturar&action=cancelar_compra_factura';
@@ -481,16 +485,7 @@
 
    	$(document).ready(function(){
 
-   	   	if($("#id_tipo_pago option:selected").text().toUpperCase().trim() == "CREDITO"){
-   	   	   	$("#plazo_pago").attr("disabled",false);
-   	   	}
    	   	
-						$( "#identificacion_clientes" ).autocomplete({
-		      				source: "<?php echo $helper->url("Facturar","AutocompleteCedula"); ?>",
-		      				minLength: 1
-		    			});
-		
-						$("#identificacion_clientes").focusout(function(){
 		    				$.ajax({
 		    					url:'<?php echo $helper->url("Facturar","AutocompleteDevuelveNombres"); ?>',
 		    					type:'POST',
@@ -517,7 +512,7 @@
 		        			  });
 		    				 
 		    				
-		    			});  
+		    			
                         
 						
 		    		});
@@ -527,51 +522,7 @@
         
         
         
-                  
-        <script>
-        
 
-	       	$(document).ready(function(){
-        	       		
-						$( "#razon_social_clientes" ).autocomplete({
-		      				source: "<?php echo $helper->url("Facturar","AutocompleteNombre"); ?>",
-		      				minLength: 1
-		    			});
-		
-						$("#razon_social_clientes").focusout(function(){
-		    				$.ajax({
-		    					url:'<?php echo $helper->url("Facturar","AutocompleteDevuelveCedula"); ?>',
-		    					type:'POST',
-		    					dataType:'json',
-		    					data:{razon_social_clientes:$('#razon_social_clientes').val()}
-		    				}).done(function(respuesta){
-
-		    					$('#id_clientes').val(respuesta.id_clientes);
-		    					$('#razon_social_clientes').val(respuesta.razon_social_clientes);
-		    					$('#identificacion_clientes').val(respuesta.identificacion_clientes);
-		    					$('#celular_clientes').val(respuesta.celular_clientes);
-		    					$('#correo_clientes').val(respuesta.correo_clientes);
-		    							    					
-		    				
-		        			}).fail(function(respuesta) {
-
-		        				$('#id_clientes').val("0");
-		    					$('#razon_social_clientes').val("");
-		    					$('#identificacion_clientes').val("");
-		    					$('#celular_clientes').val("");
-		    					$('#correo_clientes').val("");
-		    					
-		        			    
-		        			  });
-		    				 
-		    				
-		    			});  
-                        
-						
-		    		});
-		
-	     
-		     </script>
         
         
         
@@ -590,7 +541,9 @@
 		    	var razon_social_clientes   = $("#razon_social_clientes").val();
 		    	var celular_clientes    = $("#celular_clientes").val();
 		    	var correo_clientes     = $("#correo_clientes").val();
-		      
+		        var fecha_factura_cabeza = $("#fecha_factura_cabeza").val();
+
+
 		    	var contador=0;
 		    	var tiempo = tiempo || 1000;
 
@@ -690,7 +643,7 @@
 		    		$("#mensaje_identificacion_clientes").text("Ingrese Identificación");
 		    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 
-		    		$("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 			        return false;
 			    }
 		    	else 
@@ -703,7 +656,7 @@
 							$("#mensaje_identificacion_clientes").text("Ingrese al menos 10 Dígitos");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 							
 						}else{
@@ -717,7 +670,7 @@
 							$("#mensaje_identificacion_clientes").text("El código de la provincia (dos primeros dígitos) es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 
 					      }else{
@@ -733,7 +686,7 @@
 							$("#mensaje_identificacion_clientes").text("El tercer dígito ingresado es inválido");
 				    		$("#mensaje_identificacion_clientes").fadeIn("slow"); //Muestra mensaje de error
 				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top }, tiempo);
+				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_clientes).offset().top-120 }, tiempo);
 				            return false;
 					      }
 						else{
@@ -912,7 +865,7 @@
 			    	
 		    		$("#mensaje_razon_social_clientes").text("Introduzca Razón Social");
 		    		$("#mensaje_razon_social_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top-120 }, tiempo);
 			        
 			            return false;
 			    }
@@ -933,7 +886,7 @@
 						$("#mensaje_razon_social_clientes").text("Introduzca Razón Social Completa");
 			    		$("#mensaje_razon_social_clientes").fadeIn("slow"); //Muestra mensaje de error
 			           
-			            $("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top }, tiempo);
+			            $("html, body").animate({ scrollTop: $(mensaje_razon_social_clientes).offset().top-120 }, tiempo);
 			            return false;
 					}
 			    	
@@ -947,7 +900,7 @@
 			    	
 		    		$("#mensaje_celular_clientes").text("Ingrese # Celular");
 		    		$("#mensaje_celular_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top-120 }, tiempo);
 					
 			            return false;
 			    }
@@ -963,7 +916,7 @@
 						$("#mensaje_celular_clientes").text("Ingrese 10 dígitos");
 			    		$("#mensaje_celular_clientes").fadeIn("slow"); //Muestra mensaje de error
 			           
-			            $("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top }, tiempo);
+			            $("html, body").animate({ scrollTop: $(mensaje_celular_clientes).offset().top-120 }, tiempo);
 			            return false;
 					}
 
@@ -978,7 +931,7 @@
 			    	
 		    		$("#mensaje_correo_clientes").text("Introduzca un correo");
 		    		$("#mensaje_correo_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top-120 }, tiempo);
 					
 		            return false;
 			    }
@@ -991,12 +944,31 @@
 		    	{
 		    		$("#mensaje_correo_clientes").text("Introduzca un correo Valido");
 		    		$("#mensaje_correo_clientes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top }, tiempo);
+		    		$("html, body").animate({ scrollTop: $(mensaje_correo_clientes).offset().top-120 }, tiempo);
 					
 			            return false;	
 			    }
 
+		    	
+		    	if (fecha_factura_cabeza == "" )
+		    	{
+			    	
+		    		$("#mensaje_fecha_factura_cabeza").text("Seleccione Fecha para la entrega de su pedido");
+		    		$("#mensaje_fecha_factura_cabeza").fadeIn("slow"); //Muestra mensaje de error
+		    		$("html, body").animate({ scrollTop: $(mensaje_fecha_factura_cabeza).offset().top-120 }, tiempo);
+					
+			            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_fecha_factura_cabeza").fadeOut("slow"); //Muestra mensaje de error
+			          
+				}
 
+		    	
+
+
+		    	
 		    	
 				var parametros = $("#frm_factura").serialize();					
 
@@ -1012,7 +984,7 @@
 				if ( valorTotal <= 0 ){
 					
 					swal( {
-						 title:"Detalle Factura",
+						 title:"Detalle Pedido",
 						 dangerMode: true,
 						 text: "ingrese Productos en detalle",
 						 icon: "error"
@@ -1027,7 +999,7 @@
 					beforeSend:function(){
 						swal({
 							  title: "Pedido",
-							  text: "Procesando",
+							  text: "Procesando..",
 							  icon: "view/images/ajax-loader.gif",
 							  buttons: false,
 							  closeModal: false,
@@ -1050,7 +1022,7 @@
 
 						console.log(x.id_factura)
 						
-						swal({text:x.mensaje,title:"FACTURA",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
+						swal({text:x.mensaje,title:"Pedido",icon:"success", closeOnClickOutside: false, closeOnEsc: false,
 							}).then(function(){
 								window.open(url,target);
 								window.location.reload();
@@ -1061,7 +1033,7 @@
 
 							swal( {
 								 text:x.mensaje,
-								 title:"FACTURA",
+								 title:"Pedido",
 								 dangerMode: true,
 								 icon: "error"
 								}

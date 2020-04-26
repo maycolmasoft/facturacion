@@ -81,7 +81,7 @@ ul, li {
 
 
 /*---------------------------------------------*/
-input {
+.input100 {
 	outline: none;
 	border: none;
 }
@@ -91,24 +91,24 @@ textarea {
   border: none;
 }
 
-textarea:focus, input:focus {
+textarea:focus {
   border-color: transparent !important;
 }
 
-input:focus::-webkit-input-placeholder { color:transparent; }
-input:focus:-moz-placeholder { color:transparent; }
-input:focus::-moz-placeholder { color:transparent; }
-input:focus:-ms-input-placeholder { color:transparent; }
+.input100:focus::-webkit-input-placeholder { color:transparent; }
+.input100:focus:-moz-placeholder { color:transparent; }
+.input100:focus::-moz-placeholder { color:transparent; }
+.input100:focus:-ms-input-placeholder { color:transparent; }
 
 textarea:focus::-webkit-input-placeholder { color:transparent; }
 textarea:focus:-moz-placeholder { color:transparent; }
 textarea:focus::-moz-placeholder { color:transparent; }
 textarea:focus:-ms-input-placeholder { color:transparent; }
 
-input::-webkit-input-placeholder { color: #999999; }
-input:-moz-placeholder { color: #999999; }
-input::-moz-placeholder { color: #999999; }
-input:-ms-input-placeholder { color: #999999; }
+.input100::-webkit-input-placeholder { color: #999999; }
+.input100:-moz-placeholder { color: #999999; }
+.input100::-moz-placeholder { color: #999999; }
+.input100:-ms-input-placeholder { color: #999999; }
 
 textarea::-webkit-input-placeholder { color: #999999; }
 textarea:-moz-placeholder { color: #999999; }
@@ -153,13 +153,13 @@ iframe {
 
 .limiter {
   width: 100%;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
 }
 
 .container-login100 {
   width: 100%;  
   min-height: 100vh;
-  display: -webkit-box;
+ display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
   display: -ms-flexbox;

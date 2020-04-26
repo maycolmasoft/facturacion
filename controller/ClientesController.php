@@ -839,6 +839,16 @@ class ClientesController extends ControladorBase{
 		        
 		        else {
 		            
+		            
+		            $_fotografia_clientes="";
+		            
+		            $directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
+		            
+		            if( is_file( $directorio )){
+		                $data = file_get_contents($directorio);
+		                $_fotografia_clientes = pg_escape_bytea($data);
+		            }  
+		            
 		            $where_TO = "identificacion_clientes = '$_identificacion_clientes'";
 		            $result=$clientes->getBy($where_TO);
 		            
@@ -864,9 +874,7 @@ class ClientesController extends ControladorBase{
 		            }
 		                
 		            else{
-		                
-		                $_fotografia_clientes="";
-		                
+		                 
 		                
 		                
 		                $funcion = "ins_clientes";
@@ -914,13 +922,129 @@ class ClientesController extends ControladorBase{
 	}
 	
 	
-	
+	public function AfiliaClientes(){
+	    
+	    
+	    $resultado = null;
+	    $clientes=new ClientesModel();
+	    $usuarios=new UsuariosModel();
+	    
+	    $provincias = new ProvinciasModel();
+	    
+	    $parroquias = new ParroquiasModel();
+	    
+	    $cantones = new CantonesModel();
+	    
+	    
+	    $_clave_usuario = "";
+	    
+	   
+	        
+	        if (isset ($_POST["identificacion_clientes"]))
+	        {
+	            $_id_tipo_identificacion    = $_POST["id_tipo_identificacion"];
+	            
+	            
+	            $_identificacion_clientes      = $_POST["identificacion_clientes"];
+	            $_razon_social_clientes        = $_POST["razon_social_clientes"];
+	            $_telefono_clientes    = $_POST["telefono_clientes"];
+	            $_celular_clientes     = $_POST["celular_clientes"];
+	            $_correo_clientes      = $_POST["correo_clientes"];
+	            $_id_provincias        = $_POST["id_provincias"];
+	            $_id_cantones          = $_POST["id_cantones"];
+	            $_id_parroquias          = $_POST["id_parroquias"];
+	            $_direccion_clientes     = $_POST["direccion_clientes"];
+	            $_id_estado            = 1;
+	            $_id_clientes            = $_POST["id_clientes"];
+	            $_clave_usuarios      = $usuarios->encriptar($_POST["clave_usuarios"]);
+	            $_pass_sistemas_usuarios      = $_POST["clave_usuarios"];
+	            
+	            
+	            if($_id_clientes > 0){
+	                
+	                
+	            }else{
+	                
+	                if ($_FILES['fotografia_clientes']['tmp_name']!="")
+	                {
+	                    
+	                    $directorio = $_SERVER['DOCUMENT_ROOT'].'/facturacion/fotografia_clientes/';
+	                    
+	                    $nombre = $_FILES['fotografia_clientes']['name'];
+	                    $tipo = $_FILES['fotografia_clientes']['type'];
+	                    $tamano = $_FILES['fotografia_clientes']['size'];
+	                    
+	                    move_uploaded_file($_FILES['fotografia_clientes']['tmp_name'],$directorio.$nombre);
+	                    $data = file_get_contents($directorio.$nombre);
+	                    $_fotografia_clientes = pg_escape_bytea($data);
+	                    
+	                }else {
+	                    
+	                    $_fotografia_clientes="";
+	                    $directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
+	                    
+	                    if( is_file( $directorio )){
+	                        $data = file_get_contents($directorio);
+	                        $_fotografia_clientes = pg_escape_bytea($data);
+	                    }
+	                    
+	                }
+	                
+	                
+	                
+	                $funcion = "ins_clientes";
+	                $parametros = "'$_razon_social_clientes',
+		    		'$_id_tipo_identificacion',
+		    		'$_identificacion_clientes',
+		    		'1',
+		    		'$_id_provincias',
+		    		'$_id_cantones',
+		    		'$_id_parroquias',
+		    		'$_direccion_clientes',
+		    		'$_telefono_clientes',
+		    		'$_celular_clientes',
+		    		'$_correo_clientes',
+		    		'$_id_estado',
+                    '$_fotografia_clientes'";
+	                $clientes->setFuncion($funcion);
+	                $clientes->setParametros($parametros);
+	                $resultado=$clientes->llamafuncionPG();
+	                    
+	                    if ( $resultado[0] > 0 ){
+	                         
+	                       
+	                         $funcion = "ins_usuarios";
+	                         $parametros = "'$_identificacion_clientes',
+		    				   '$_razon_social_clientes',
+		    				   '$_clave_usuarios',
+		    	               '$_pass_sistemas_usuarios',
+		    	               '$_telefono_clientes',
+		    	               '$_celular_clientes',
+		    	               '$_correo_clientes',
+		    	               '51',
+		    	               '1',
+		    	               '$_fotografia_clientes'";
+	                         $clientes->setFuncion($funcion);
+	                         $clientes->setParametros($parametros);
+	                         $resultado=$clientes->Insert();
+	                         
+	                    }
+	                
+	            }
+	            
+	            
+	            $this->redirect("Usuarios", "Afiliacion");
+	        }
+	        
+	    
+	    
+	}
 
 
 	public function AutocompleteCedula(){
 			
-		session_start();
-		$_id_usuarios= $_SESSION['id_usuarios'];
+		//session_start();
+		//$_id_usuarios= $_SESSION['id_usuarios'];
 		$clientes = new ClientesModel();
 		$identificacion_clientes = $_GET['term'];
 			
@@ -943,8 +1067,8 @@ class ClientesController extends ControladorBase{
 	
 	public function AutocompleteDevuelveNombres(){
 			
-		session_start();
-		$_id_usuarios= $_SESSION['id_usuarios'];
+		//session_start();
+		//$_id_usuarios= $_SESSION['id_usuarios'];
 		$clientes = new ClientesModel();
 			
 		$identificacion_clientes = $_POST['identificacion_clientes'];
@@ -966,7 +1090,7 @@ class ClientesController extends ControladorBase{
 			$respuesta->celular_clientes = $resultSet[0]->celular_clientes;
 			$respuesta->correo_clientes = $resultSet[0]->correo_clientes;
 			$respuesta->id_estado = $resultSet[0]->id_estado;
-			$respuesta->id_estado = $resultSet[0]->fotografia_clientes;
+			//$respuesta->id_estado = $resultSet[0]->fotografia_clientes;
 			
 			
 			echo json_encode($respuesta);

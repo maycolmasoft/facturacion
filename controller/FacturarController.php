@@ -53,8 +53,155 @@ class FacturarController extends ControladorBase{
 	}
 	
 	
+	public function  index2(){
+	    
+	    
+	    
+	    
+	    session_start();
+	    if (isset(  $_SESSION['id_usuarios']) )
+	    {
+	        
+	        $factura_cabeza = new FacturaCabezaModel();
+	        $factura_detalle = new FacturaDetalleModel();
+	        
+	        $tipo_pago = new TipoPagoModel();
+	        $resultTipPago = $tipo_pago->getAll("nombre_tipo_pago");
+	        
+	        
+	        $nombre_controladores = "Facturar";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $factura_cabeza->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            
+	            $this->view("FacturarClientes",array(
+	                "resultTipPago" =>$resultTipPago
+	                
+	            ));
+	            
+	        }
+	        else
+	        {
+	            $this->view("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a Facturar"
+	                
+	            ));
+	            
+	        }
+	        
+	        
+	    }
+	    else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	    
+	    
+	}
 	
 	
+	public function index3(){
+	    
+	    
+	    session_start();
+	    if (isset(  $_SESSION['id_usuarios']) )
+	    {
+	        
+	        $factura_cabeza = new FacturaCabezaModel();
+	        $factura_detalle = new FacturaDetalleModel();
+	        
+	        $tipo_pago = new TipoPagoModel();
+	        $resultTipPago = $tipo_pago->getAll("nombre_tipo_pago");
+	        
+	        
+	        $nombre_controladores = "Facturar";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $factura_cabeza->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            
+	            $this->view("FacturarTilapia",array(
+	                "resultTipPago" =>$resultTipPago
+	                
+	            ));
+	            
+	        }
+	        else
+	        {
+	            $this->view("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a Facturar"
+	                
+	            ));
+	            
+	        }
+	        
+	        
+	    }
+	    else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	    
+	    
+	    
+	}
+	
+	
+	public function index4(){
+	    
+	    
+	    
+	    
+	    
+	    session_start();
+	    if (isset(  $_SESSION['id_usuarios']) )
+	    {
+	        
+	        $factura_cabeza = new FacturaCabezaModel();
+	        $factura_detalle = new FacturaDetalleModel();
+	        
+	        $tipo_pago = new TipoPagoModel();
+	        $resultTipPago = $tipo_pago->getAll("nombre_tipo_pago");
+	        
+	        
+	        $nombre_controladores = "Facturar";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $factura_cabeza->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            
+	            $this->view("FacturarPanaderia",array(
+	                "resultTipPago" =>$resultTipPago
+	                
+	            ));
+	            
+	        }
+	        else
+	        {
+	            $this->view("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a Facturar"
+	                
+	            ));
+	            
+	        }
+	        
+	        
+	    }
+	    else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	    
+	    
+	    
+	}
 	
 	public function consulta_productos()
 	{
@@ -67,7 +214,8 @@ class FacturarController extends ControladorBase{
 		$columnas = "productos.id_productos,
                       productos.codigo_productos,
                       productos.nombre_productos,
-                      productos.precio_productos";
+                      productos.precio_productos,
+                      productos.imagen_productos";
 		 
 		$tablas = " public.productos";
 		 
@@ -78,11 +226,18 @@ class FacturarController extends ControladorBase{
 		 
 		$action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
 		$search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-		 
+		$id_tipo_productos =  (isset($_REQUEST['id_tipo_productos'])&& $_REQUEST['id_tipo_productos'] !=NULL)?$_REQUEST['id_tipo_productos']:0;
+		
 		 
 		if($action == 'ajax')
 		{
-			 
+		    if($id_tipo_productos>0){
+		        
+		        $where .=" AND productos.id_tipo_productos='$id_tipo_productos'";
+		        
+		    }
+		    
+		    
 			if(!empty($search)){
 				 
 				$where1=" AND (productos.nombre_productos ILIKE '".$search."%' OR productos.codigo_productos ILIKE '".$search."%')";
@@ -143,8 +298,9 @@ class FacturarController extends ControladorBase{
 				{
 					$i++;
 					$html.='<tr>';
-					$html.='<td style="font-size: 11px;">'.$i.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+					//$html.='<td style="font-size: 11px;">'.$i.'</td>';
+					$html.='<td style="font-size: 11px;" ><img src="view/DevuelveImagenView.php?id_valor='.$res->id_productos.'&id_nombre=id_productos&tabla=productos&campo=imagen_productos"  width="80" height="60"></td>';
+                    $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 					$html.='<td class="col-xs-1"><div class="pull-right">';
 					$html.='<input type="number" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
@@ -395,12 +551,12 @@ class FacturarController extends ControladorBase{
 				$html.= "<table id='tabla_temporal' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 				$html.= "<thead>";
 				$html.= "<tr>";
-				$html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">P. Unitario</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">P. Total</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+				$html.='<th style="text-align: left;  font-size: 13px;">Codigo</th>';
+				$html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
+				$html.='<th style="text-align: left;  font-size: 13px;">Cantidad</th>';
+				$html.='<th style="text-align: right;  font-size: 13px;">P. Unitario</th>';
+				$html.='<th style="text-align: right;  font-size: 13px;">P. Total</th>';
+				$html.='<th style="text-align: left;  font-size: 13px;"></th>';
 				 
 				$html.='</tr>';
 				$html.='</thead>';
@@ -417,12 +573,12 @@ class FacturarController extends ControladorBase{
 					
 					$i++;
 					$html.='<tr>';
-					$html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->cantidad_temp_factura.'</td>';
-					$html.='<td style="font-size: 11px; text-align:right; ">'.$res->precio_unitario_temp_factura.'</td>';
-					$html.='<td style="font-size: 11px; text-align:right; ">'.$res->total_temp_factura.'</td>';
-					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="#" onclick="eliminar_temporal('.$res->id_temp_factura.')" class="btn btn-danger" title="Eliminar" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+					$html.='<td style="font-size: 12px;">'.$res->codigo_productos.'</td>';
+					$html.='<td style="font-size: 12px;">'.$res->nombre_productos.'</td>';
+					$html.='<td style="font-size: 12px;">'.$res->cantidad_temp_factura.'</td>';
+					$html.='<td style="font-size: 12px; text-align:right; ">'.$res->precio_unitario_temp_factura.'</td>';
+					$html.='<td style="font-size: 12px; text-align:right; ">'.$res->total_temp_factura.'</td>';
+					$html.='<td style="font-size: 12px;"><span class="pull-right"><a href="#" onclick="eliminar_temporal('.$res->id_temp_factura.')" class="btn btn-danger" title="Eliminar" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 					 
 					$html.='</tr>';
 					
@@ -491,7 +647,7 @@ class FacturarController extends ControladorBase{
 				$valortotalFactura = $subtotal+$valorconiva-$valorcondescuento;
 				$html.='<tr>';
 				$html.='<td class="text-right" colspan=3></td>';
-				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
+				$html.='<td class="text-right" colspan=1><b>Toatal a Pagar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
 				$html.='<td id="trtotalFactura" class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
@@ -527,8 +683,8 @@ class FacturarController extends ControladorBase{
 				$html.='<th style="text-align: left;  font-size: 13px;">Codigo</th>';
 				$html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
 				$html.='<th style="text-align: left;  font-size: 13px;">Cantidad</th>';
-				$html.='<th style="text-align: left;  font-size: 13px;">P. Unitario</th>';
-				$html.='<th style="text-align: left;  font-size: 13px;">P. Total</th>';
+				$html.='<th style="text-align: right;  font-size: 13px;">P. Unitario</th>';
+				$html.='<th style="text-align: right;  font-size: 13px;">P. Total</th>';
 				$html.='<th style="text-align: left;  font-size: 13px;"></th>';
 					
 				$html.='</tr>';
@@ -648,7 +804,7 @@ class FacturarController extends ControladorBase{
 				
 				$html.='<tr>';
 				$html.='<td class="text-right" colspan=3></td>';
-				$html.='<td class="text-right" colspan=1><b>TOTAL $&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
+				$html.='<td class="text-right" colspan=1><b>Total a Pagar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>';
 				$html.='<td id="trtotalFactura" class="text-right" style="font-size: 12px;">'.number_format((float)$valortotalFactura, 2, ',', '.').'</td>';
 				$html.='</tr>';
 				
@@ -759,7 +915,7 @@ class FacturarController extends ControladorBase{
 			$where = "id_usuarios = '$_id_usuarios'";
 			$resultado=$temp_factura->deleteById($where);
 			 
-			$this->redirect("Facturar","index");
+			$this->redirect("Usuarios","Bienvenida");
 		}
 	}
 	
@@ -1042,11 +1198,11 @@ class FacturarController extends ControladorBase{
 	        $resultado = $Factura -> llamafuncionPG();
 	        
 	        if(is_null($resultado))
-	            throw new Exception( "error al insertar Factura");
+	            throw new Exception( "error al insertar Pedido");
 	            
 	            if ( $resultado[0] > 0 ){
 	                
-	                $respuesta['mensaje'] = "Factura Ingresada correctamente";
+	                $respuesta['mensaje'] = "Pedido Ingresado correctamente";
 	                $respuesta['valor'] = 1;
 	                $respuesta['id_factura'] = $resultado[0];
 	                echo json_encode($respuesta); die();

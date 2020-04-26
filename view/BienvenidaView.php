@@ -4,7 +4,7 @@
   
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Facturación</title>
+    <title>Pedidos</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <style>
     .scrollable-menu {
@@ -32,6 +32,12 @@
 
   <body class="hold-transition skin-blue fixed sidebar-mini">
     
+     <?php
+        
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        ?>
     
     
     <div class="wrapper">
@@ -52,14 +58,24 @@
   </aside>
 
   <div class="content-wrapper">
-    <section class="content-header">
-     
-    </section>
+    
+  <section class="content-header">
+      <h1>
+        
+        <small><?php echo $fecha; ?></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li class="active">Bienvenida</li>
+      </ol>
+    </section>   
+    
 
     <section class="content">
+      
+      <div id='pone_pedidos'></div>
     		<div id='pone_facturas'></div>
-            <div id='pone_productos'></div>
-            <div id='pone_clientes'></div>   
+          
     </section>
   </div>
  
@@ -76,13 +92,32 @@
         	   $(document).ready( function (){
         		
         		   pone_facturas();
-        		   pone_productos();
-        		   pone_clientes();
+        		   pone_pedidos();
+        		  // pone_clientes();
         		   //cargar_sesiones();*/
         		  
 	   			});
         	
         	   
+        	   function pone_pedidos(){
+        		   $(document).ready( function (){
+        		       $.ajax({
+        		                 beforeSend: function(objeto){
+        		                   $("#pone_pedidos").html('')
+        		                 },
+        		                 url: 'index.php?controller=Usuarios&action=pone_pedidos',
+        		                 type: 'POST',
+        		                 data: null,
+        		                 success: function(x){
+        		                   $("#pone_pedidos").html(x);
+        		                 },
+        		                error: function(jqXHR,estado,error){
+        		                  $("#pone_pedidos").html("Ocurrio un error al cargar la informacion de Pedidos..."+estado+"    "+error);
+        		                }
+        		              });
+        		     })
+        		  }
+
         	   function pone_facturas(){
         		   $(document).ready( function (){
         		       $.ajax({
@@ -96,11 +131,12 @@
         		                   $("#pone_facturas").html(x);
         		                 },
         		                error: function(jqXHR,estado,error){
-        		                  $("#pone_facturas").html("Ocurrio un error al cargar la informacion de usuarios..."+estado+"    "+error);
+        		                  $("#pone_facturas").html("Ocurrio un error al cargar la informacion de Pedidos..."+estado+"    "+error);
         		                }
         		              });
         		     })
         		  }
+     		  
         	   function pone_productos(){
         		   $(document).ready( function (){
         		       $.ajax({

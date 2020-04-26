@@ -1163,6 +1163,7 @@ public function index(){
     
     
     
+    
     public function Bienvenida(){
         
         session_start();
@@ -1200,9 +1201,46 @@ public function index(){
     }
     
     
+    
+    public function pone_pedidos()
+    {
+        session_start();
+       
+        $id_usuarios=$_SESSION["id_usuarios"];
+        
+        $html='<div class="col-md-4">
+        <!-- Widget: user widget style 1 -->
+        <div class="box box-widget widget-user-2">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-navy">
+        <div class="widget-user-image">
+        <img class="img-circle" src="view/DevuelveImagenView.php?id_valor='.$_SESSION["id_usuarios"].'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios">
+        </div>
+        <!-- /.widget-user-image -->
+        <h3 class="widget-user-username">'.$_SESSION["nombre_usuarios"].'</h3>
+        <h5 class="widget-user-desc">Cliente</h5>
+        </div>
+        <div class="box-footer no-padding">
+        <ul class="nav nav-stacked">
+        <li><a href="index.php?controller=Facturar&action=index2">Viveres <span class="pull-right badge bg-blue">Realizar Pedido</span></a></li>
+        <li><a href="index.php?controller=Facturar&action=index4">Panaderia <span class="pull-right badge bg-aqua">Realizar Pedido</span></a></li>
+        <li><a href="index.php?controller=Facturar&action=index3">Tilapia-Camarón <span class="pull-right badge bg-green">Realizar Pedido</span></a></li>
+        </ul>
+        </div>
+        </div>
+        <!-- /.widget-user -->
+        </div>';
+        
+        echo $html;
+        die();
+    }
+    
+    
     public function total_facturas()
     {
         session_start();
+        $id_usuarios=$_SESSION["id_usuarios"];
+        
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $hoy = getdate();
         $fecha_inicio=$hoy['year']."-".$hoy['mon']."-".$hoy['mday'];
@@ -1212,23 +1250,37 @@ public function index(){
         $id_rol=$_SESSION["id_rol"];
         $i=0;
         $factura_cabeza = new FacturaCabezaModel();
-        $columnas = "SUM (factura_cabeza.total_factura_cabeza)";
+        $columnas = "SUM (factura_cabeza.total_factura_cabeza), count(factura_cabeza.*) as cantidad";
         $tablas   = "public.factura_cabeza";
-        $where    = "factura_cabeza.fecha_factura_cabeza='".$fecha_inicio."'";
+        $where    = "factura_cabeza.fecha_factura_cabeza='".$fecha_inicio."' AND factura_cabeza.id_usuarios='$id_usuarios'";
         $id       = "sum";
         $resultDia = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
         
-        if(!(empty($resultDia[0]->sum))) $total_dia= $resultDia[0]->sum;
-        else $total_dia="0.00";
+        if(!(empty($resultDia[0]->sum))){ 
+            
+            $total_dia= $resultDia[0]->sum;
+            $total_cantidad_dia= $resultDia[0]->cantidad;
+        }else{ 
+            
+            $total_dia="0.00";
+            $total_cantidad_dia= 0;
         
-        $columnas = "SUM (factura_cabeza.total_factura_cabeza)";
+        }
+        
+        $columnas = "SUM (factura_cabeza.total_factura_cabeza), count(factura_cabeza.*) as cantidad";
         $tablas   = "public.factura_cabeza";
-        $where    = "factura_cabeza.fecha_factura_cabeza BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."'";
+        $where    = "factura_cabeza.fecha_factura_cabeza BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."' AND factura_cabeza.id_usuarios='$id_usuarios'";
         $id       = "sum";
         $resultMes = $factura_cabeza->getCondiciones($columnas ,$tablas ,$where, $id);
         
-        if(!(empty($resultMes[0]->sum))) $total_mes= $resultMes[0]->sum;
-        else $total_mes="0.00";
+        if(!(empty($resultMes[0]->sum))) {
+            $total_mes= $resultMes[0]->sum; 
+            $total_cantidad_mes= $resultMes[0]->cantidad;
+        }
+        else {
+            $total_mes="0.00";
+            $total_cantidad_mes=0;
+        }
         
         $html='<div class="col-lg-3 col-xs-6">
         <!-- Widget: user widget style 1 -->
@@ -1236,13 +1288,13 @@ public function index(){
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header bg-navy">
         <i class="fa fa-shopping-cart fa-3x" style="float: left;"></i>
-        <h5 class="widget-user-username">Ventas</h3>
+        <h5 class="widget-user-username">Pedidos</h3>
         <h5 class="widget-user-desc">'.$periodo.'</h5>
         </div>
         <div class="box-footer no-padding">
         <ul class="nav nav-stacked">
-        <li style="background-color: #2471A3"><a href="#"><font color="white">Ventas en el día </font><span class="pull-right badge bg-teal">'.$total_dia.'$</span></a></li>
-        <li style="background-color: #2471A3"><a href="#"><font color="white">Ventas en el mes </font><span class="pull-right badge bg-aqua">'.$total_mes.'$</span></a></li>
+        <li style="background-color: #2471A3"><a href="index.php?controller=ConsultaFactura&action=index2"><font color="white"> Pedidos en el día <span class="pull-left badge bg-teal">'.$total_cantidad_dia.'</span></font><span class="pull-right badge bg-teal">'.$total_dia.'$</span></a></li>
+        <li style="background-color: #2471A3"><a href="index.php?controller=ConsultaFactura&action=index2"><font color="white"> Pedidos en el mes <span class="pull-left badge bg-teal">'.$total_cantidad_mes.'</span></font><span class="pull-right badge bg-aqua">'.$total_mes.'$</span></a></li>
         </ul>
         </div>
         </div>
@@ -1258,7 +1310,7 @@ public function index(){
         session_start();
         
         $id_rol=$_SESSION["id_rol"];
-        $factura_cabeza = new FacturaCabezaModel();
+         $factura_cabeza = new FacturaCabezaModel();
         $columnas = "COUNT (productos.id_productos)";
         $tablas   = "public.productos";
         $where    = "1=1";
@@ -1376,6 +1428,26 @@ public function index(){
     
     public function Loguear(){
     	
+        $clientes = new ClientesModel();
+        
+        
+        $provincias = new ProvinciasModel();
+        $resultProvincias= $provincias->getBy("nombre_provincias ILIKE 'PICHINCHA'");
+        
+        $parroquias = new ParroquiasModel();
+        $resultParroquias= $parroquias->getBy("nombre_parroquias ILIKE 'MALCHINGUI'");
+        
+        $cantones = new CantonesModel();
+        $resultCantones= $cantones->getBy("nombre_cantones ILIKE 'PEDRO MONCAYO'");
+        
+        $tipo_identificacion = new TipoIdentificacionModel();
+        $resultTipIdenti= $tipo_identificacion->getAll("nombre_tipo_identificacion");
+        
+        $estado = new EstadoModel();
+        $resultEst = $estado->getAll("nombre_estado");
+        
+        
+        
     	$error=FALSE;
     	if (isset($_POST["usuario"]) && ($_POST["clave"] ) )
     	{
@@ -1468,7 +1540,9 @@ public function index(){
     				 
     				 
     				$this->view("Login",array(
-    						"resultSet"=>"$mensaje", "error"=>$error
+    				    "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+    				    "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+    				    "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
     				));
     				 
     				 
@@ -1480,11 +1554,12 @@ public function index(){
     		else
     		{
     			$error = TRUE;
+    			
     			$mensaje = "Este Usuario no existe resgistrado en nuestro sistema.";
-    			
-    			
-	    		$this->view("Login",array(
-	    				"resultSet"=>"$mensaje", "error"=>$error
+    			$this->view("Login",array(
+	    		    "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+	    		    "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+	    		    "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
 	    		));
 	    		
 	    		
@@ -1495,11 +1570,12 @@ public function index(){
     	else
     	{
     		    $error = TRUE;
-    			$mensaje = "Ingrese su cedula y su clave.";
-    			
+    			$mensaje = "Registrese para obtener su usuario y su clave.";
     			
 	    		$this->view("Login",array(
-	    				"resultSet"=>"$mensaje", "error"=>$error
+	    		    "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+	    		    "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+	    		    "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
 	    		));
 	    		
 	    		
@@ -1517,12 +1593,31 @@ public function index(){
     {
     	session_start();
     	session_destroy();
-    
+    	
+    	$clientes = new ClientesModel();
+    	
+    	$provincias = new ProvinciasModel();
+    	$resultProvincias= $provincias->getBy("nombre_provincias ILIKE 'PICHINCHA'");
+    	
+    	$parroquias = new ParroquiasModel();
+    	$resultParroquias= $parroquias->getBy("nombre_parroquias ILIKE 'MALCHINGUI'");
+    	
+    	$cantones = new CantonesModel();
+    	$resultCantones= $cantones->getBy("nombre_cantones ILIKE 'PEDRO MONCAYO'");
+    	
+    	$tipo_identificacion = new TipoIdentificacionModel();
+    	$resultTipIdenti= $tipo_identificacion->getAll("nombre_tipo_identificacion");
+    	
+    	$estado = new EstadoModel();
+    	$resultEst = $estado->getAll("nombre_estado");
+    	
     	$error = TRUE;
 	    $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
 	    	
 	    $this->view("Login",array(
-	    		"resultSet"=>"$mensaje", "error"=>$error
+	        "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+	        "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+	        "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
 	    ));
 	    	
 	    die();
@@ -1531,17 +1626,74 @@ public function index(){
     }
     
     
+    
+    public function  Afiliacion(){
+        
+        $clientes = new ClientesModel();
+        
+        $provincias = new ProvinciasModel();
+        $resultProvincias= $provincias->getBy("nombre_provincias ILIKE 'PICHINCHA'");
+        
+        $parroquias = new ParroquiasModel();
+        $resultParroquias= $parroquias->getBy("nombre_parroquias ILIKE 'MALCHINGUI'");
+        
+        $cantones = new CantonesModel();
+        $resultCantones= $cantones->getBy("nombre_cantones ILIKE 'PEDRO MONCAYO'");
+        
+        $tipo_identificacion = new TipoIdentificacionModel();
+        $resultTipIdenti= $tipo_identificacion->getAll("nombre_tipo_identificacion");
+        
+        $estado = new EstadoModel();
+        $resultEst = $estado->getAll("nombre_estado");
+        
+        $error = FALSE;
+        $mensaje = "Te registraste correctamente.<br>Ingresa tu usuario y clave.";
+        
+        
+        $this->view("Login",array(
+            "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+            "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+            "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
+        ));
+        
+        
+        die();
+        
+        
+        
+        
+    }
+    
 	public function  cerrar_sesion ()
 	{
 		session_start();
 		session_destroy();
+		
+		$clientes = new ClientesModel();
+		
+		$provincias = new ProvinciasModel();
+		$resultProvincias= $provincias->getBy("nombre_provincias ILIKE 'PICHINCHA'");
+		
+		$parroquias = new ParroquiasModel();
+		$resultParroquias= $parroquias->getBy("nombre_parroquias ILIKE 'MALCHINGUI'");
+		
+		$cantones = new CantonesModel();
+		$resultCantones= $cantones->getBy("nombre_cantones ILIKE 'PEDRO MONCAYO'");
+		
+		$tipo_identificacion = new TipoIdentificacionModel();
+		$resultTipIdenti= $tipo_identificacion->getAll("nombre_tipo_identificacion");
+		
+		$estado = new EstadoModel();
+		$resultEst = $estado->getAll("nombre_estado");
 		
 		$error = TRUE;
 		$mensaje = "Te has desconectado de nuestro sistema.";
 		 
 		 
 		$this->view("Login",array(
-				"resultSet"=>"$mensaje", "error"=>$error
+		    "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+		    "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+		    "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
 		));
 		 
 		 
@@ -1557,11 +1709,32 @@ public function index(){
 		session_start();
 		session_destroy();
 	
+		
+		$clientes = new ClientesModel();
+		
+		
+		$provincias = new ProvinciasModel();
+		$resultProvincias= $provincias->getBy("nombre_provincias ILIKE 'PICHINCHA'");
+		
+		$parroquias = new ParroquiasModel();
+		$resultParroquias= $parroquias->getBy("nombre_parroquias ILIKE 'MALCHINGUI'");
+		
+		$cantones = new CantonesModel();
+		$resultCantones= $cantones->getBy("nombre_cantones ILIKE 'PEDRO MONCAYO'");
+		
+		$tipo_identificacion = new TipoIdentificacionModel();
+		$resultTipIdenti= $tipo_identificacion->getAll("nombre_tipo_identificacion");
+		
+		$estado = new EstadoModel();
+		$resultEst = $estado->getAll("nombre_estado");
+		
 		$error = FALSE;
 		$mensaje = "Actualizaste tus datos, vuelve a iniciar sesión.";	
 			
 		$this->view("Login",array(
-				"resultSet"=>"$mensaje", "error"=>$error
+		    "resultSet"=>"$mensaje", "error"=>$error, "resultProvincias"=>$resultProvincias,
+		    "resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones,
+		    "resultTipIdenti"=>$resultTipIdenti, "resultEst"=>$resultEst
 		));
 			
 			

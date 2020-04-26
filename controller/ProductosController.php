@@ -16,6 +16,9 @@ class ProductosController extends ControladorBase{
      	$estado = new EstadoModel();
 		$resultEst = $estado->getAll("nombre_estado");
 		
+		$tipo_productos = new TipoProductosModel();
+		$resultTip = $tipo_productos->getAll("nombre_tipo_productos");
+		
 		$resultEdit = "";
 		
 		
@@ -38,7 +41,8 @@ class ProductosController extends ControladorBase{
                                       productos.precio_productos,
 								      productos.id_estado,
                                       productos.creado, 
-                                      productos.modificado";
+                                      productos.modificado,
+                                      productos.id_tipo_productos";
 						$tablas   =  "public.productos";
 						$where    =  "productos.id_productos = '$_id_productos'"; 
 						$id       = "productos.id_productos";
@@ -48,7 +52,7 @@ class ProductosController extends ControladorBase{
 				}
 				
 				$this->view("Productos",array(
-				    "resultEst"=>$resultEst, "resultEdit" =>$resultEdit
+				    "resultEst"=>$resultEst, "resultEdit" =>$resultEdit, "resultTip"=>$resultTip
 			
 				));
 				
@@ -86,7 +90,7 @@ class ProductosController extends ControladorBase{
 			    $_codigo_productos = $_POST["codigo_productos"];
 			    $_id_estado        = $_POST["id_estado"];
 			    $_precio_productos = $_POST["precio_productos"];
-			    
+			    $_id_tipo_productos = $_POST["id_tipo_productos"];
 			  
 			    if($_id_productos > 0){
 					
@@ -112,7 +116,8 @@ class ProductosController extends ControladorBase{
                                     codigo_productos = '$_codigo_productos',
                                     id_estado        = '$_id_estado',
                                     precio_productos = '$_precio_productos',
-                                    imagen_productos = '$imagen_productos'";
+                                    imagen_productos = '$imagen_productos',
+                                    id_tipo_productos =  '$_id_tipo_productos'";
 			            
 			            $tabla = "productos";
 			            
@@ -125,7 +130,8 @@ class ProductosController extends ControladorBase{
 			            $columnas =    "nombre_productos = '$_nombre_productos',
                                     codigo_productos = '$_codigo_productos',
                                     id_estado        = '$_id_estado',
-                                    precio_productos = '$_precio_productos'";
+                                    precio_productos = '$_precio_productos',
+                                    id_tipo_productos =  '$_id_tipo_productos'";
 			            
 			            $tabla = "productos";
 			            
@@ -158,7 +164,8 @@ class ProductosController extends ControladorBase{
                                     '$_codigo_productos',
                                     '$_precio_productos',
                                     '$_id_estado',
-                                    '$imagen_productos'";
+                                    '$imagen_productos',
+                                    '$_id_tipo_productos'";
 				        $productos->setFuncion($funcion);
 				        $productos->setParametros($parametros);
 				        $resultado=$productos->Insert();
@@ -170,7 +177,8 @@ class ProductosController extends ControladorBase{
                                     '$_codigo_productos',
                                     '$_precio_productos',
                                     '$_id_estado',
-                                    '$imagen_productos'";
+                                    '$imagen_productos',
+                                    '$_id_tipo_productos'";
 				        $productos->setFuncion($funcion);
 				        $productos->setParametros($parametros);
 				        $resultado=$productos->Insert();
@@ -215,9 +223,9 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado, imagen_productos";
-	    $tablas   =  "public.productos";
-	    $where    =  "productos.id_estado = 1";
+                                      productos.modificado, imagen_productos, tipo_productos.nombre_tipo_productos";
+	    $tablas   =  "public.productos, public.tipo_productos";
+	    $where    =  "productos.id_estado = 1 AND productos.id_tipo_productos=tipo_productos.id_tipo_productos";
 	    $id       = "productos.id_productos";
 	    
 	
@@ -235,7 +243,7 @@ class ProductosController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+	            $where1=" AND (productos.nombre_productos ILIKE '%".$search."%' OR  productos.codigo_productos ILIKE '%".$search."%'  OR tipo_productos.nombre_tipo_productos ILIKE '%".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -276,6 +284,7 @@ class ProductosController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
@@ -300,6 +309,7 @@ class ProductosController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_productos.'&id_nombre=id_productos&tabla=productos&campo=imagen_productos" width="80" height="60"></td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
@@ -357,9 +367,9 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado";
-	    $tablas   =  "public.productos";
-	    $where    =  "productos.id_estado = 1";
+                                      productos.modificado, tipo_productos.nombre_tipo_productos";
+	    $tablas   =  "public.productos, public.tipo_productos";
+	    $where    =  "productos.id_estado = 1 and productos.id_tipo_productos=tipo_productos.id_tipo_productos";
 	    $id       = "productos.id_productos";
 	    
 	    
@@ -377,7 +387,7 @@ class ProductosController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+	            $where1=" AND (productos.nombre_productos ILIKE '%".$search."%' OR  productos.codigo_productos ILIKE '%".$search."%' OR tipo_productos.nombre_tipo_productos ILIKE '%".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -417,9 +427,9 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado, imagen_productos";
-		$tablas   =  "public.productos";
-		$where    =  "productos.id_estado = 2";
+                                      productos.modificado, imagen_productos, tipo_productos.nombre_tipo_productos";
+		$tablas   =  "public.productos, public.tipo_productos";
+		$where    =  "productos.id_estado = 2 and productos.id_tipo_productos=tipo_productos.id_tipo_productos";
 		$id       = "productos.id_productos";
 		 
 		
@@ -437,7 +447,7 @@ class ProductosController extends ControladorBase{
 			if(!empty($search)){
 				 
 				 
-				$where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+				$where1=" AND (productos.nombre_productos ILIKE '%".$search."%' OR  productos.codigo_productos ILIKE '%".$search."%' OR tipo_productos.nombre_tipo_productos ILIKE '%".$search."%')";
 				 
 				$where_to=$where.$where1;
 			}else{
@@ -481,6 +491,7 @@ class ProductosController extends ControladorBase{
 				$html.= "<tr>";
 				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+				$html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 				$html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
@@ -504,6 +515,7 @@ class ProductosController extends ControladorBase{
 					$html.='<tr>';
 					$html.='<td style="font-size: 11px;">'.$i.'</td>';
 					$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_productos.'&id_nombre=id_productos&tabla=productos&campo=imagen_productos" width="80" height="60"></td>';
+					$html.='<td style="font-size: 11px;">'.$res->nombre_tipo_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
@@ -561,9 +573,9 @@ class ProductosController extends ControladorBase{
                                       productos.codigo_productos,
                                       productos.precio_productos,
                                       productos.creado,
-                                      productos.modificado";
-	    $tablas   =  "public.productos";
-	    $where    =  "productos.id_estado = 2";
+                                      productos.modificado, tipo_productos.nombre_tipo_productos";
+	    $tablas   =  "public.productos, public.tipo_productos";
+	    $where    =  "productos.id_estado = 2 and productos.id_tipo_productos=tipo_productos.id_tipo_productos";
 	    $id       = "productos.id_productos";
 	    
 	    
@@ -581,7 +593,7 @@ class ProductosController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR  productos.codigo_productos LIKE '".$search."%')";
+	            $where1=" AND (productos.nombre_productos ILIKE '%".$search."%' OR  productos.codigo_productos ILIKE '%".$search."%' OR tipo_productos.nombre_tipo_productos ILIKE '%".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -785,6 +797,7 @@ class ProductosController extends ControladorBase{
 			$respuesta->codigo_productos = $resultSet[0]->codigo_productos;
 			$respuesta->precio_productos = $resultSet[0]->precio_productos;
 			$respuesta->id_estado = $resultSet[0]->id_estado;
+			$respuesta->id_tipo_productos = $resultSet[0]->id_tipo_productos;
 				
 			echo json_encode($respuesta);
 		}
@@ -834,7 +847,8 @@ class ProductosController extends ControladorBase{
 			$respuesta->codigo_productos = $resultSet[0]->codigo_productos;
 			$respuesta->precio_productos = $resultSet[0]->precio_productos;
 			$respuesta->id_estado = $resultSet[0]->id_estado;
-	
+			$respuesta->id_tipo_productos = $resultSet[0]->id_tipo_productos;
+			
 			echo json_encode($respuesta);
 		}
 			
@@ -875,9 +889,9 @@ class ProductosController extends ControladorBase{
                                       productos.precio_productos,
 								      productos.id_estado,
                                       productos.creado,
-                                      productos.modificado";
-	            $tablas   =  "public.productos";
-	            $where    =  "1=1";
+                                      productos.modificado, tipo_productos.nombre_tipo_productos";
+	            $tablas   =  "public.productos, public.tipo_productos";
+	            $where    =  "1=1 and productos.id_tipo_productos=tipo_productos.id_tipo_productos";
 	            $id       = "productos.id_productos";
 	            
 	            $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -888,7 +902,7 @@ class ProductosController extends ControladorBase{
 	            if(!empty($search)){
 	                
 	                
-	                $where1=" AND (productos.codigo_productos LIKE '%".$search."%' OR productos.nombre_productos LIKE '%".$search."%')";
+	                $where1=" AND (productos.codigo_productos ILIKE '%".$search."%' OR productos.nombre_productos ILIKE '%".$search."%' OR tipo_productos.nombre_tipo_productos ILIKE '%".$search."%')";
 	                
 	                $where_to=$where.$where1;
 	            }else{
@@ -919,6 +933,7 @@ class ProductosController extends ControladorBase{
 	                $html.= "<thead>";
 	                $html.= "<tr>";
 	                $html.='<th style="text-align: left;  font-size: 13px;"></th>';
+	                $html.='<th style="text-align: left;  font-size: 13px;">Tipo</th>';
 	                $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
 	                $html.='<th style="text-align: left;  font-size: 13px;">Código</th>';
 	                $html.='<th style="text-align: left;  font-size: 13px;">Precio</th>';
@@ -939,6 +954,7 @@ class ProductosController extends ControladorBase{
 	                    $i++;
 	                    $html.='<tr>';
 	                    $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_productos.'</td>';
 	                    $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 	                    $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 	                    $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
@@ -977,195 +993,6 @@ class ProductosController extends ControladorBase{
 	    
 	}
 	
-	public function search(){
-	    
-	    session_start();
-	    
-	    $productos = new ProductosModel();
-	    $where_to="";
-	    $columnas = " productos.id_productos,
-                                      productos.nombre_productos,
-                                      productos.codigo_productos,
-                                      productos.precio_productos,
-								      productos.id_estado,
-                                      productos.creado,
-                                      productos.modificado";
-	    $tablas   =  "public.productos";
-	    $where    =  "productos.id_productos = '$_id_productos'";
-	    $id       = "productos.id_productos";
-	    
-	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-	    
-	    $where2="";
-	    
-	    
-	    if($action == 'ajax')
-	    {
-	        
-	        if(!empty($search)){
-	            
-	            
-	     
-	            
-	            $where1=" AND (productos.nombre_productos LIKE '%".$search."%' OR productos.codigo_productos LIKE '%".$search."%')";
-	            
-	            $where_to=$where.$where1;
-	        }else{
-	  
-	            
-	            $where_to=$where;
-	            
-	        }
-	        
-	        $html="";
-	        $resultSet=$evaluacion->getCantidad("*", $tablas, $where_to);
-	        $cantidadResult=(int)$resultSet[0]->total;
-	        
-	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-	        
-	        $per_page = 50; //la cantidad de registros que desea mostrar
-	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-	        $offset = ($page - 1) * $per_page;
-	        
-	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-	        
-	        $resultSet=$evaluacion->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
-	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        
-	        if($cantidadResult>0)
-	        {
-	            
-	            $html.='<div class="pull-left" style="margin-left:11px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_calificaciones_realizadas' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
-	            $html.= "<thead>";
-	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Registro</th>';
-	            $html.='</tr>';
-	            $html.='</thead>';
-	            $html.='<tbody>';
-	            
-	            $i=0;
-	            $Excelente=0;
-	            $Bueno=0;
-	            $Reguar=0;
-	            $Malo=0;
-	            foreach ($resultSet as $res)
-	            {
-	                
-	                $i++;
-	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->precio_productos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.date("d/m/Y", strtotime($res->creado)).'</td>';
-	                $html.='</tr>';
-	            }
-	            
-	            
-	            $html.='</tbody>';
-	            $html.='</table>';
-	            $html.='</section></div>';
-	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_load_calificaciones("index.php", $page, $total_pages, $adjacents).'';
-	            $html.='</div>';
-	            
-	            
-	            
-	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay calificaciones registradas...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
-	        }
-	        
-	        echo $html;
-	        die();
-	        
-	    }
-	    
-	}
-	
-	
-	public function paginate_load_calificaciones($reload, $page, $tpages, $adjacents) {
-	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
-	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
-	    if($page==1) {
-	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_calificaciones(1)'>$prevlabel</a></span></li>";
-	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_calificaciones(".($page-1).")'>$prevlabel</a></span></li>";
-	        
-	    }
-	    
-	    // first label
-	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_calificaciones(1)'>1</a></li>";
-	    }
-	    // interval
-	    if($page>($adjacents+2)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // pages
-	    
-	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-	    for($i=$pmin; $i<=$pmax; $i++) {
-	        if($i==$page) {
-	            $out.= "<li class='active'><a>$i</a></li>";
-	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_calificaciones(1)'>$i</a></li>";
-	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_calificaciones(".$i.")'>$i</a></li>";
-	        }
-	    }
-	    
-	    // interval
-	    
-	    if($page<($tpages-$adjacents-1)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // last
-	    
-	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_calificaciones($tpages)'>$tpages</a></li>";
-	    }
-	    
-	    // next
-	    
-	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_calificaciones(".($page+1).")'>$nextlabel</a></span></li>";
-	    }else {
-	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-	    }
-	    
-	    $out.= "</ul>";
-	    return $out;
-	}
 	
 }
 ?>

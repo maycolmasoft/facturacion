@@ -87,7 +87,7 @@
                                     </div>
                             		</div>
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="col-xs-12 col-md-2 col-md-2">
                             		<div class="form-group">
                             		   						 
                                                               <label for="nombre_productos" class="control-label">Nombre:</label>
@@ -109,7 +109,19 @@
 						             </div>
 						             </div>
                             		  
-                            		  
+                            		   <div class="col-lg-2 col-xs-12 col-md-2">
+	                        		   <div class="form-group">
+	                                                          <label for="id_tipo_productos" class="control-label">Tipo:</label>
+	                                                          <select name="id_tipo_productos" id="id_tipo_productos"  class="form-control" >
+	                                                          <option value="0" selected="selected">--Seleccione--</option>
+	                        									<?php foreach($resultTip as $res) {?>
+	                        										<option value="<?php echo $res->id_tipo_productos; ?>"<?php if ($res->id_tipo_productos == $resEdit->id_tipo_productos )  echo  ' selected="selected" '  ;  ?>><?php echo $res->nombre_tipo_productos; ?> </option>
+	                        							        <?php } ?>
+	                        								   </select> 
+	                                                          <div id="mensaje_id_tipo_productos" class="errores"></div>
+	                                    </div>
+	                                    </div>
+	                                    
                             	   <div class="col-xs-12 col-md-2 col-md-2">
                         		   <div class="form-group">
                                                           <label for="id_estado" class="control-label">Estado:</label>
@@ -124,7 +136,7 @@
                                     </div>
                                     
                                     
-                                    <div class="col-lg-3 col-xs-12 col-md-3">
+                                    <div class="col-lg-2 col-xs-12 col-md-2">
                         		    <div class="form-group">
                                                           <label for="imagen_productos" class="control-label">Imagen:</label>
                                                           <input type="file" class="form-control" id="imagen_productos" name="imagen_productos" value="" accept="image/*">
@@ -161,7 +173,7 @@
                                       </div>
                             		  </div>
                         		    
-                        		      <div class="col-xs-12 col-md-3 col-md-3">
+                        		      <div class="col-xs-12 col-md-2 col-md-2">
                             		  <div class="form-group">
                             		   						 
                                                               <label for="nombre_productos" class="control-label">Nombre:</label>
@@ -185,6 +197,19 @@
 	                            		  
                             		  
                             		  
+                            		  <div class="col-lg-2 col-xs-12 col-md-2">
+	                        		   <div class="form-group">
+	                                                          <label for="id_tipo_productos" class="control-label">Tipo:</label>
+	                                                          <select name="id_tipo_productos" id="id_tipo_productos"  class="form-control" >
+	                                                          <option value="0" selected="selected">--Seleccione--</option>
+	                        									<?php foreach($resultTip as $res) {?>
+	                        										<option value="<?php echo $res->id_tipo_productos; ?>"><?php echo $res->nombre_tipo_productos; ?> </option>
+	                        							        <?php } ?>
+	                        								   </select> 
+	                                                          <div id="mensaje_id_tipo_productos" class="errores"></div>
+	                                    </div>
+	                                    </div>
+	                                    
 	                            	   <div class="col-lg-2 col-xs-12 col-md-2">
 	                        		   <div class="form-group">
 	                                                          <label for="id_estado" class="control-label">Estado:</label>
@@ -199,7 +224,7 @@
 	                                    </div>
 	                            		  
 	                            		  
-	                                   <div class="col-lg-3 col-xs-12 col-md-3">
+	                                   <div class="col-lg-2 col-xs-12 col-md-2">
                         		       <div class="form-group">
                                                           <label for="imagen_productos" class="control-label">Imagen:</label>
                                                           <input type="file" class="form-control"  id="imagen_productos" name="imagen_productos" value="">
@@ -406,7 +431,8 @@
 				$('#precio_productos').val("0.00");
 				$('#id_estado').val("0");
 				$('#imagen_productos').val("");
-
+				$('#id_tipo_productos').val("0");
+				
 
 				
 		    }); 
@@ -440,6 +466,7 @@
 		    					$('#codigo_productos').val(respuesta.codigo_productos);
 		    					$('#precio_productos').val(respuesta.precio_productos);
 		    					$('#id_estado').val(respuesta.id_estado);
+		    					$('#id_tipo_productos').val(respuesta.id_tipo_productos);
 		    					
 		    							    				
 		        			}).fail(function(respuesta) {
@@ -448,6 +475,8 @@
 		    					//$('#codigo_productos').val("");
 		    					$('#precio_productos').val("0.00");
 		    					$('#id_estado').val("0");
+		    					$('#id_tipo_productos').val("0");
+		    					
 		    				
 		        			    
 		        			  });
@@ -488,6 +517,7 @@
 		    					$('#codigo_productos').val(respuesta.codigo_productos);
 		    					$('#precio_productos').val(respuesta.precio_productos);
 		    					$('#id_estado').val(respuesta.id_estado);
+		    					$('#id_tipo_productos').val(respuesta.id_tipo_productos);
 		    					
 		    							    				
 		        			}).fail(function(respuesta) {
@@ -496,7 +526,8 @@
 		    					//$('#codigo_productos').val("");
 		    					$('#precio_productos').val("0.00");
 		    					$('#id_estado').val("0");
-		    				
+		    					$('#id_tipo_productos').val("0");
+		    					
 		        			    
 		        			  });
 		    				 
@@ -525,6 +556,8 @@
 		    	var nombre_productos = $("#nombre_productos").val();
 		    	var precio_productos = $("#precio_productos").val();
 		    	var id_estado 		 = $("#id_estado").val();
+				var id_tipo_productos = $('#id_tipo_productos').val();
+				
 		    	
 		    	var contador=0;
 		    	var tiempo = tiempo || 1000;
@@ -576,7 +609,24 @@
 		            
 				} 
 
+		    	
+		    	if (id_tipo_productos == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_tipo_productos").text("Seleccione Tipo");
+		    		$("#mensaje_id_tipo_productos").fadeIn("slow"); //Muestra mensaje de error
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_productos).offset().top-120 }, tiempo);
+			        return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_tipo_productos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				} 
 
+
+
+		    	
 		    	if (id_estado == 0)
 		    	{
 			    	
@@ -603,6 +653,9 @@
 		        $( "#precio_productos" ).focus(function() {
 				  $("#mensaje_precio_productos").fadeOut("slow");
 				});
+			    $( "#id_tipo_productos" ).focus(function() {
+				  $("#mensaje_id_tipo_productos").fadeOut("slow");
+	   		    });
 			    $( "#id_estado" ).focus(function() {
 				  $("#mensaje_id_estado").fadeOut("slow");
 	   		    });		      
